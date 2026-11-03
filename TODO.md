@@ -307,11 +307,11 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 # Assignment submission ? required (not post-MVP)
 
 - [ ] Write approximately 1?2 pages covering specification guidance, AI-generated work, database setup, frontend/database communication, one real problem and resolution, deployment, and learning.
-- [ ] Export AI conversation history or produce a Markdown interaction summary showing user guidance, implementation, testing, and debugging; use development notes as evidence, without inventing work.
-- [ ] Capture sanitized screenshots of Supabase tables, a survey with associated questions, stored student responses, and application results.
+- [x] Export AI conversation history or produce a Markdown interaction summary showing user guidance, implementation, testing, and debugging; use development notes as evidence, without inventing work.
+- [x] Capture sanitized screenshots of Supabase tables, a survey with associated questions, stored student responses, and application results.
 - [ ] Arrange private instructor test access and include delivery instructions without publishing credentials in the repository.
-- [ ] Verify repository includes source, all supplied specs, updated verified TODO, migrations/schema, and README.
-- [ ] Audit assignment checklist and rubric against evidence; clearly disclose any remaining incomplete requirements.
+- [x] Verify repository includes source, all supplied specs, updated verified TODO, migrations/schema, and README.
+- [x] Audit assignment checklist and rubric against evidence; clearly disclose any remaining incomplete requirements.
 - [ ] Prepare HuskyCT submission with repository URL, public app URL, private test-access instructions, report, AI history, and database evidence.
 - [ ] Review final package before using the remaining submission attempt; submit by November 5, 2026 at 11:59 PM EST and verify receipt.
 
@@ -445,3 +445,12 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Verify other survey metadata unchanged and sign out the temporary instructor session; save no credentials.
 - [x] Disclose warm-results load target miss (mean 2.289s, p95 8.529s); retain all samples and note unknown cause. User requested no performance changes and stopped testing.
 - [x] Record corrected Auth Site URL as user-confirmed; independent reread not performed after Escape, and no further testing planned.
+
+## Submission-document preparation (2026-11-03)
+
+- [x] Prepare ai-development-history.md from actual interactions/notes, separating student actions, AI work, observed checks and limitations.
+- [x] Review all four existing PNGs visually and map them to the assignment's four required screenshot categories in submission-checklist.md.
+- [x] Verify required source/specs/TODO/migrations/README are tracked and record missing deliverables without restarting application testing.
+- [ ] Student reviews the new AI history and includes it plus screenshots in the final submission; local files are not yet submitted.
+- [x] Review report content read-only: approximately 524 words cover all seven assignment prompts; no edits made.
+- [ ] Confirm final report pagination, include report/history/screenshots and privately deliver grader access; HuskyCT submission/receipt remain unverified.
