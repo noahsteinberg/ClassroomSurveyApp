@@ -37,13 +37,17 @@ export default function LoginPage() {
   }
   if (loading)
     return (
-      <main className="page">
+      <main id="main-content" tabIndex={-1} className="page">
         <p role="status">Checking your session…</p>
       </main>
     )
   if (session) return <Navigate to="/dashboard" replace />
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-5 py-12">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="flex min-h-screen items-center justify-center bg-slate-50 px-5 py-12"
+    >
       <section className="panel w-full max-w-md" aria-labelledby="login-title">
         <Link className="text-sm font-semibold text-slate-600 underline" to="/">
           Classroom Survey

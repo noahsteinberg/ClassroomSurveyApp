@@ -131,6 +131,13 @@ export default function SurveyEditorPage() {
     setSaveError(null)
     setSaved(false)
     if (Object.keys(invalid).length) {
+      const first = Object.keys(invalid)[0]
+      const field =
+        first === 'title'
+          ? document.getElementById('survey-title')
+          : (document.getElementById(`q-${first}`) ??
+            document.getElementById(`c-${first}`))
+      field?.focus()
       setSaveError(
         'Check the highlighted fields. Your changes have not been saved.',
       )
@@ -197,13 +204,13 @@ export default function SurveyEditorPage() {
   }
   if (loading)
     return (
-      <main className="page">
+      <main id="main-content" tabIndex={-1} className="page">
         <p role="status">Loading draft…</p>
       </main>
     )
   if (loadError || readonly)
     return (
-      <main className="page">
+      <main id="main-content" tabIndex={-1} className="page">
         <h1 className="text-2xl font-bold">
           {readonly ? 'Draft editing only' : 'Survey unavailable'}
         </h1>
@@ -217,7 +224,7 @@ export default function SurveyEditorPage() {
       </main>
     )
   return (
-    <main className="page max-w-3xl">
+    <main id="main-content" tabIndex={-1} className="page max-w-3xl">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-3xl font-bold">
           {id ? 'Edit draft survey' : 'New survey'}
@@ -308,7 +315,7 @@ export default function SurveyEditorPage() {
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="text-xl font-bold">Question {qi + 1}</h2>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
                     className="button"

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function EditorDialog({
   title,
@@ -14,16 +14,24 @@ export default function EditorDialog({
   onCancel: () => void
 }) {
   const ref = useRef<HTMLDialogElement>(null)
+  const [returnFocus] = useState(
+    () => document.activeElement as HTMLElement | null,
+  )
   useEffect(() => {
     const dialog = ref.current
     dialog?.showModal()
-    return () => dialog?.close()
-  }, [])
+    return () => {
+      dialog?.close()
+      if (returnFocus?.isConnected) returnFocus.focus()
+      else document.getElementById('main-content')?.focus()
+    }
+  }, [returnFocus])
   return (
     <dialog
       ref={ref}
       className="confirm-dialog"
       aria-labelledby="editor-dialog-title"
+      aria-describedby="editor-dialog-description"
       onCancel={(e) => {
         e.preventDefault()
         onCancel()
@@ -32,7 +40,9 @@ export default function EditorDialog({
       <h2 className="text-xl font-bold" id="editor-dialog-title">
         {title}
       </h2>
-      <p className="mt-3 text-slate-600">{message}</p>
+      <p id="editor-dialog-description" className="mt-3 text-slate-600">
+        {message}
+      </p>
       <div className="mt-6 flex flex-wrap justify-end gap-3">
         <button autoFocus type="button" className="button" onClick={onCancel}>
           Cancel

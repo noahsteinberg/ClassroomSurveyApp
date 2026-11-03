@@ -138,7 +138,7 @@ export default function DashboardPage() {
       s.title.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()),
   )
   return (
-    <main className="page">
+    <main id="main-content" tabIndex={-1} className="page">
       <header className="flex flex-wrap items-start justify-between gap-5 border-b border-slate-200 pb-6">
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-slate-500">

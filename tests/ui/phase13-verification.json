@@ -1,0 +1,35 @@
+{
+  "phase": 13,
+  "date": "2026-11-03",
+  "scope": "Remaining usability/accessibility gaps; preserve working page designs",
+  "checks": {
+    "focused_browser_scenarios": 18,
+    "result": "passed across focused runs, including affected reruns",
+    "build": "passed",
+    "lint": "passed",
+    "changed_file_formatting": "passed",
+    "whitespace": "passed"
+  },
+  "coverage": [
+    "Keyboard route focus/titles/skip link and login",
+    "320px editor/student/results and long survey/dialog text",
+    "Validation error associations/focus, radio keys and completion focus",
+    "Dialog description, Tab/Shift+Tab, Escape and focus restoration",
+    "Projected QR size, PNG/count/closure workflow",
+    "Input boundary contrast >= 3:1",
+    "Hidden charts have no tabindex=0 descendants; visible tables retained",
+    "Affected loading/error/empty/confirmation states"
+  ],
+  "remaining": [
+    "Actual phone scan at reachable URL",
+    "Second-browser verification",
+    "Deployment/deep links/performance/submission tasks",
+    "Full screen-reader audit not performed"
+  ],
+  "known_advisories": [
+    "Existing Vite main chunk size advisory",
+    "Pre-existing formatting warnings in historical phases6-8/phases9-11 reports"
+  ],
+  "database_changes": false,
+  "publication": "User authorized commit and push after focused verification; credentials, temporary files and user screenshots excluded."
+}

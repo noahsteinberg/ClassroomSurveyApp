@@ -90,6 +90,18 @@ function StudentSurvey({ slug }: { slug: string }) {
     void load()
     return () => controller.abort()
   }, [slug, reload])
+  useEffect(() => {
+    if (
+      ['success', 'duplicate', 'closed', 'missing', 'error'].includes(state)
+    ) {
+      const heading = document.querySelector<HTMLElement>('main h1')
+      if (heading) {
+        heading.tabIndex = -1
+        heading.focus()
+        document.title = `${heading.textContent} | Classroom Survey`
+      }
+    }
+  }, [state])
   async function submit(event: FormEvent) {
     event.preventDefault()
     if (!survey || pending.current || storageError || !token.current) return
@@ -100,6 +112,7 @@ function StudentSurvey({ slug }: { slug: string }) {
     setError(null)
     if (absent.length) {
       setError('Please answer every question before submitting.')
+      document.getElementsByName(absent[0])[0]?.focus()
       return
     }
     try {
@@ -160,7 +173,11 @@ function StudentSurvey({ slug }: { slug: string }) {
     }
   }
   return (
-    <main className="mx-auto min-h-screen max-w-2xl px-5 py-10 sm:px-8">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto min-h-screen max-w-2xl px-5 py-10 sm:px-8"
+    >
       {state === 'loading' ? (
         <p role="status">Loading survey…</p>
       ) : state === 'success' ? (
@@ -251,6 +268,12 @@ function StudentSurvey({ slug }: { slug: string }) {
                                   old.filter((id) => id !== q.id),
                                 )
                               }}
+                              aria-invalid={missing.includes(q.id)}
+                              aria-describedby={
+                                missing.includes(q.id)
+                                  ? `missing-${q.id}`
+                                  : undefined
+                              }
                               required
                             />
                             <span className="min-w-0 break-words">

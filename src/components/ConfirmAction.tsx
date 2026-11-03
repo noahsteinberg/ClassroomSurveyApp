@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export type SurveyAction = 'close' | 'archive' | 'delete' | 'activate'
 export default function ConfirmAction({
@@ -15,11 +15,18 @@ export default function ConfirmAction({
   onConfirm: () => void
 }) {
   const ref = useRef<HTMLDialogElement>(null)
+  const [returnFocus] = useState(
+    () => document.activeElement as HTMLElement | null,
+  )
   useEffect(() => {
     const dialog = ref.current
     dialog?.showModal()
-    return () => dialog?.close()
-  }, [])
+    return () => {
+      dialog?.close()
+      if (returnFocus?.isConnected) returnFocus.focus()
+      else document.getElementById('main-content')?.focus()
+    }
+  }, [returnFocus])
   const verb = action[0].toUpperCase() + action.slice(1)
   return (
     <dialog

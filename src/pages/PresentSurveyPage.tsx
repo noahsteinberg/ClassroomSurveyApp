@@ -140,12 +140,12 @@ function Presentation({ id }: { id: string }) {
   }
   if (loading)
     return (
-      <main className="page">
+      <main id="main-content" tabIndex={-1} className="page">
         <p role="status">Loading presentation…</p>
       </main>
     )
   return (
-    <main className="page text-center">
+    <main id="main-content" tabIndex={-1} className="page text-center">
       <div className="mb-6 flex flex-wrap justify-between gap-3">
         <Link className="button" to="/dashboard">
           Back to Dashboard

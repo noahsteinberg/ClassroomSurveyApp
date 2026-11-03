@@ -5,13 +5,13 @@ export default function ProtectedRoute() {
   const { session, loading, error } = useAuth()
   if (loading)
     return (
-      <main className="page">
+      <main id="main-content" tabIndex={-1} className="page">
         <p role="status">Checking your session…</p>
       </main>
     )
   if (error)
     return (
-      <main className="page">
+      <main id="main-content" tabIndex={-1} className="page">
         <p role="alert">{error}</p>
         <button className="button" onClick={() => window.location.reload()}>
           Try again

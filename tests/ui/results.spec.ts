@@ -144,6 +144,15 @@ test('known counts, percentages, unanswered and refresh; closed/archived results
   await expect(first.getByRole('table')).toContainText('33.3%')
   await expect(page.getByText('Unanswered: 1', { exact: true })).toBeVisible()
   await expect(page.locator('.recharts-bar')).toHaveCount(2)
+  await expect(page.locator('[aria-hidden="true"] [tabindex="0"]')).toHaveCount(
+    0,
+  )
+  await page.setViewportSize({ width: 320, height: 640 })
+  await expect
+    .poll(() =>
+      page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+    )
+    .toBe(true)
   api.setData({
     ...dataset(4),
     survey: { ...dataset().survey, status: 'archived' },

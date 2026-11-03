@@ -43,7 +43,7 @@ function Results({ id }: { id: string }) {
     return () => controller.abort()
   }, [id, refresh])
   return (
-    <main className="page max-w-4xl">
+    <main id="main-content" tabIndex={-1} className="page max-w-4xl">
       <div className="mb-6 flex flex-wrap justify-between gap-3">
         <Link className="button" to="/dashboard">
           Back to Dashboard
@@ -187,6 +187,7 @@ function Results({ id }: { id: string }) {
                       >
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart
+                            accessibilityLayer={false}
                             data={result.choices}
                             layout="vertical"
                             margin={{ left: 5, right: 20, top: 5, bottom: 5 }}

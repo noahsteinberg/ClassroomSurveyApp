@@ -483,3 +483,31 @@ User confirmed ?All duplication checks passed? for the guided hosted test: dupli
 ### Phase 12 publication
 
 User authorized committing and pushing the verified Phase 12 work. Publication includes only duplication code, affected dashboard tests, TODO, development notes and the verification report. Local environment credentials, temporary browser/build artifacts and the four user screenshot files are excluded. Reviewed staged paths, whitespace and credential patterns; existing focused automated and user verification results are retained without rerunning unrelated tests.
+
+
+## 2026-11-03 ? Phase 13 usability and accessibility review
+
+Reviewed the nine Phase 13 tasks against current pages. Shared page/panel/button/input styles, loading indicators, empty states, friendly error messages, destructive confirmations, readable URL/response count, 640px QR image rendered up to 480px and QR PNG export already exist. Retained those working layouts and behavior. No redesign, dependency changes, database migrations or hosted test-data operations.
+
+Remaining gaps fixed:
+
+- Added a keyboard-visible Skip to main content link and focusable main landmarks. Navigation waits for asynchronous page headings, sets a descriptive document title, and focuses the heading when focus is on the body. It avoids stealing focus from a user who already began interacting while a page loaded. Corrected the lazy-results loading punctuation.
+- Student missing-answer validation focuses the first unanswered radio and associates each invalid radio with its error text. Terminal submission states focus their heading and update the title. Draft validation similarly focuses the first invalid title/question/choice field; existing field error associations remain.
+- Editor dialogs now associate their descriptive warning. Both dialog components explicitly restore focus to the triggering control after cancellation, or to main if the trigger was removed. Existing Cancel-first focus, native modal semantics and Escape behavior remain.
+- Nested fieldsets have min-width: 0; question move controls wrap; long panel/dialog text wraps anywhere; dialogs scroll within 90dvh. These prevent narrow-screen overflow without rearranging page designs.
+- Shared input borders changed from slate-300 to slate-500; explicit slate-500 placeholders remain readable. A computed sRGB luminance check confirms the input boundary exceeds 3:1 against its white background. Existing dark text, badges, error colors and blue focus outlines retained.
+- Disabled Recharts' keyboard accessibility layer inside already aria-hidden duplicate charts, so hidden graphs do not create keyboard stops. The visible captioned tables retain all counts and percentages.
+
+### Focused evidence and corrections
+
+Added four tests in tests/ui/accessibility.spec.ts: keyboard login/route heading/title/skip link; 320px editor validation/dialog description/Tab/Shift+Tab/Escape/focus restoration; 320px student long-text/required-error/radio arrow keys/keyboard submission/completion; and projected QR size plus 320px long-title dialog, survey-action focus restoration and computed input contrast. Extended the existing results-count test to verify no hidden chart keyboard stops and that results fit at 320px after ResizeObserver completes.
+
+Initial keyboard test assumed reverse Tab from the first control would directly wrap to the last control; adjusted the assertion to exercise forward/backward movement within the native dialog. The subsequent Escape assertion exposed the actual lost-trigger-focus issue, fixed in both dialog components. Results' first immediate post-resize measurement observed the chart before ResizeObserver resized it; changed that assertion to wait for the resulting layout, which passes without changing chart behavior.
+
+All 18 distinct affected scenarios passed across focused runs: four new accessibility scenarios, four existing editor scenarios, seven existing student/presentation scenarios, two dashboard mobile/error/mutation scenarios and one results/counts/refresh scenario. Reran only failures or checks affected by final changes. Final build passed (695 modules), lint passed, changed source/test formatting passed and whitespace review passed. Existing Vite main-chunk advisory remains (~597 kB minified/~175 kB gzip); pre-existing formatting warnings in historical phases6-8/phases9-11 JSON reports remain outside this change.
+
+Evidence: tests/ui/phase13-verification.json. Checked Phase 13 tasks only after review and relevant verification. These are automated Chrome keyboard/layout checks, not a claim of a complete screen-reader or WCAG audit. Actual phone QR scanning, a second browser, deployment/deep links and performance/submission tasks remain in later phases. User screenshots and local credentials remain untouched. No commits or pushes performed.
+
+### Phase 13 publication
+
+User authorized committing and pushing the verified Phase 13 work. Publication includes usability/accessibility changes, affected tests, TODO, notes and the verification report. Explicitly excluded environment credentials, temporary browser/build artifacts and the four user screenshot files. Reviewed staged paths, whitespace and credential patterns; retained completed focused verification without repeating unrelated tests.

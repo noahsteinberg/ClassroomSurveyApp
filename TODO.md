@@ -190,15 +190,15 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 13 — UI Polish
 
-- [ ] Add consistent page layouts.
-- [ ] Improve mobile responsiveness.
-- [ ] Add loading states.
-- [ ] Add empty states.
-- [ ] Add error messages.
-- [ ] Add confirmation dialogs for destructive actions.
-- [ ] Improve QR-code presentation for classroom projection.
-- [ ] Test accessibility and keyboard navigation.
-- [ ] Improve color contrast.
+- [x] Add consistent page layouts.
+- [x] Improve mobile responsiveness.
+- [x] Add loading states.
+- [x] Add empty states.
+- [x] Add error messages.
+- [x] Add confirmation dialogs for destructive actions.
+- [x] Improve QR-code presentation for classroom projection.
+- [x] Test accessibility and keyboard navigation.
+- [x] Improve color contrast.
 
 ---
 
@@ -399,3 +399,11 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Verify content/order, distinct IDs, editor redirect, source-change rejection and identical-payload retry recovery with synthetic browser tests.
 - [x] Verify affected dashboard checks, build and lint.
 - [x] User verifies hosted duplication of a survey with responses, editable Draft copy with zero responses, and unchanged original title/status/count.
+
+## Phase 13 focused verification (2026-11-03)
+
+- [x] Review existing shared layouts, loading/empty/error states and destructive confirmations; retain working designs.
+- [x] Verify route titles/heading focus, skip navigation, keyboard login, required-answer focus and completion focus.
+- [x] Verify editor dialog description, keyboard cancellation and trigger-focus restoration; verify survey-action focus restoration.
+- [x] Verify narrow editor/student/results layouts and long text, classroom QR size and shared input boundary contrast.
+- [x] Pass affected editor/student/presentation/dashboard/results checks, build, lint and changed-file formatting.
