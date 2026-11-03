@@ -29,7 +29,7 @@ test('protected route, invalid login, login persistence and logout', async ({
   await expect(page).toHaveURL(/\/login$/)
 })
 
-test('survey list, search/status filters and unavailable later features', async ({
+test('survey list, search/status filters and duplication availability', async ({
   page,
 }) => {
   await mock(page)
@@ -45,7 +45,7 @@ test('survey list, search/status filters and unavailable later features', async 
   for (const name of ['Duplicate'])
     await expect(
       page.getByRole('button', { name, exact: true }).first(),
-    ).toBeDisabled()
+    ).toBeEnabled()
   await page.getByLabel('Search by title').fill('RECURSION')
   await expect(page.getByRole('listitem')).toHaveCount(1)
   await page.getByLabel('Status', { exact: true }).selectOption('closed')

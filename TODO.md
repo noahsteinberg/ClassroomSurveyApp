@@ -66,7 +66,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Add status badges for Draft, Active, Closed, and Archived.
 - [x] Add a New Survey button.
 - [x] Add Edit action.
-- [ ] Add Duplicate action.
+- [x] Add Duplicate action.
 - [x] Add Delete action.
 - [x] Add Archive action.
 - [x] Add View Results action.
@@ -179,12 +179,12 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 12 — Survey Duplication
 
-- [ ] Duplicate survey title and description.
-- [ ] Duplicate questions.
-- [ ] Duplicate answer choices.
-- [ ] Create the copy in Draft state.
-- [ ] Add "Copy of ..." naming.
-- [ ] Redirect to the editor after duplication.
+- [x] Duplicate survey title and description.
+- [x] Duplicate questions.
+- [x] Duplicate answer choices.
+- [x] Create the copy in Draft state.
+- [x] Add "Copy of ..." naming.
+- [x] Redirect to the editor after duplication.
 
 ---
 
@@ -272,7 +272,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [ ] Define public slug resolution and safe closed/not-found responses without exposing inactive survey content or results.
 - [x] Add visible presentation response count and refresh behavior; polling behavior verified in focused browser tests (live user workflow recorded separately).
 - [ ] Validate at least one question, nonblank title/question/choice text, at least two multiple-choice options, exactly True/False choices, stable ordering, and agreed required-answer rules.
-- [ ] Make duplication atomic or recover safely from failure; copy no responses or answers and issue a distinct public identifier.
+- [x] Make duplication atomic or recover safely from failure; copy no responses or answers and issue a distinct public identifier.
 - [x] Define result percentage denominator, rounding, zero-response behavior, and unanswered display.
 
 # Required additions to Phase 14 ? Verification
@@ -363,7 +363,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Enable New Survey and draft Edit after the Phase 5 editor exists; verified in Phase 5.
 - [x] Enable Activate with Phase 6 activation/presentation flow; confirmed activation opens the protected QR presentation.
 - [x] Enable View Results after Phase 9 results page exists.
-- [ ] Enable Duplicate after Phase 12 copying flow and the editor exist.
+- [x] Enable Duplicate after Phase 12 copying flow and the editor exist.
 
 
 # Phase 5 focused verification - November 2, 2026
@@ -393,3 +393,9 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] User opens the exported CSV in a spreadsheet application and confirms columns, row count, timestamps and answers.
 
 - [x] User verifies active-survey results refresh after another submission while the survey remains open.
+
+## Phase 12 focused verification (2026-11-03)
+
+- [x] Verify content/order, distinct IDs, editor redirect, source-change rejection and identical-payload retry recovery with synthetic browser tests.
+- [x] Verify affected dashboard checks, build and lint.
+- [x] User verifies hosted duplication of a survey with responses, editable Draft copy with zero responses, and unchanged original title/status/count.

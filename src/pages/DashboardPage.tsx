@@ -6,6 +6,7 @@ import { readPages } from '../lib/results'
 import { localDateKey } from '../lib/history'
 import ConfirmAction from '../components/ConfirmAction'
 import ActivateSurvey from '../components/ActivateSurvey'
+import DuplicateSurvey from '../components/DuplicateSurvey'
 import type { SurveyAction } from '../components/ConfirmAction'
 
 type Status = 'draft' | 'active' | 'closed' | 'archived'
@@ -174,10 +175,6 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
-        <p id="upcoming" className="mt-3 text-sm text-slate-600">
-          Coming next: survey duplication. These controls are currently
-          unavailable.
-        </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_200px]">
           <div>
             <label className="label" htmlFor="search">
@@ -329,13 +326,10 @@ export default function DashboardPage() {
                       />
                     </>
                   )}
-                  <button
-                    className="button"
-                    disabled
-                    aria-describedby="upcoming"
-                  >
-                    Duplicate
-                  </button>
+                  <DuplicateSurvey
+                    id={survey.id}
+                    disabled={busy || loading || logoutBusy}
+                  />
                   <Link className="button" to={`/surveys/${survey.id}/results`}>
                     View Results
                   </Link>

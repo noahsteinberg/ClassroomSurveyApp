@@ -460,3 +460,26 @@ All original Phase 9, 10 and 11 tasks, the Phase 4 View Results action, and thei
 ## 2026-11-02 ? Active results confirmation and Phases 9-11 publication
 
 User supplied a spreadsheet screenshot showing the expected metadata/timestamp/question columns and one row per response, then explicitly confirmed that results refresh worked while the survey remained active. Recorded both confirmations in the verification report and checked the active-refresh task. User authorized committing/pushing the verified Phases 9-11 work, excluding credentials and temporary files. Publication review checks staged paths, secret patterns, whitespace and repository state only; completed suites and hosted operations are not repeated. Excluded an incidental formatting-only change to the prior phase evidence.
+
+
+## 2026-11-03 ? Phase 12 survey duplication
+
+Implemented Duplicate on every dashboard survey status. Reads title/description and explicitly ordered question/choice pages under existing instructor access, checks source updated_at again, then assigns fresh survey/question/choice UUIDs and saves ?Copy of [title]? through the existing save_draft_survey RPC. No migration or new permissions are needed. That RPC creates an atomic Draft with null public_slug; only activation later creates a public identifier. The duplication reader never queries responses, answers or browser tokens, and the saving operation only writes draft content. The source is never updated.
+
+Decisions: preserve question type, text, choice order and description; allow the existing incomplete-draft rules; redirect the confirmed copy to its editor. A source revision change during loading fails before saving and asks for another attempt. A synchronous pending guard prevents repeated clicks. Once content is loaded, retain the new IDs, request ID and exact payload for Retry duplication after an uncertain response, so the database receipt recovers the same copy. Retry recovery applies while this card remains mounted; navigating away or reloading discards that in-memory attempt. If unsure after leaving the page, inspect the dashboard for the copy before starting another duplication.
+
+Focused verification: tests/ui/duplication.spec.ts covers content/types/order/description, unique fresh IDs, null expected version, Draft/public-slug contract, editor redirect, no response/answer reads, unchanged source fixtures, a lost save response with byte-equivalent retry payload, and changed-source rejection without a save. All three passed alongside five affected dashboard scenarios (8 total, 13.9 seconds). These browser mocks verify the client contract; hosted zero-response/source-preservation evidence remains the manual check below. Existing transactional draft-save SQL checks already cover the unchanged RPC; no unrelated hosted test suites or new database mutations were run.
+
+Initial lint overlapped Playwright cleanup of its temporary output directory and encountered a missing-directory traversal error; reran after browser completion. Lint then identified a render-time ref read and loose test types, both corrected with state and explicit types. Final lint passed. Build passed (694 modules); the existing main chunk size advisory remains (~595 kB minified). No credentials, dependencies or original specification files changed. User screenshot files remain untouched and untracked.
+
+Requested one manual test: duplicate a Closed survey with responses, confirm Copy of naming/content/order, rename/save the copy, verify Draft and zero results, then verify the original title/status/response count. Awaiting user confirmation; that TODO stays unchecked. No commit or push performed.
+
+Final rerun after lint fixes: three duplication scenarios passed (10.2 seconds), build and changed-file formatting passed; git diff --check passed. Full format:check still reports pre-existing formatting warnings in tests/ui/phases6-8-verification.json and phases9-11-verification.json, which this phase does not change. Evidence: tests/ui/phase12-verification.json. Local dashboard returned HTTP 200 for the guided manual check.
+
+### Phase 12 manual verification completed
+
+User confirmed ?All duplication checks passed? for the guided hosted test: duplicate a Closed survey with responses, verify copied title/description/questions/types/choice order, rename and save the editable Draft, confirm zero responses on the copy, and confirm the original title/status/response count remain unchanged. Checked the remaining manual verification task and updated tests/ui/phase12-verification.json. Phase 12 verification is complete; no additional tests, commits or pushes performed.
+
+### Phase 12 publication
+
+User authorized committing and pushing the verified Phase 12 work. Publication includes only duplication code, affected dashboard tests, TODO, development notes and the verification report. Local environment credentials, temporary browser/build artifacts and the four user screenshot files are excluded. Reviewed staged paths, whitespace and credential patterns; existing focused automated and user verification results are retained without rerunning unrelated tests.
