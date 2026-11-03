@@ -1,0 +1,23 @@
+{
+  "local_date": "2026-11-02",
+  "project_ref": "hmrtffcpoyksnwdquyow",
+  "migration_version": "20261103005809",
+  "migration_sha256": "d392b13ec2392bb00045d7a28967801a18528927f7625a2eee17f6d513ade5ca",
+  "local_sql_assertions_passed": 25,
+  "local_concurrency": [
+    "same-request creation yields one survey and one receipt",
+    "same-version concurrent edits accept one writer and reject stale writer"
+  ],
+  "affected_ui_tests_passed": 9,
+  "editor_ui_tests_passed": 4,
+  "hosted_transaction": "passed; create/retry/order/conflict/validation/receipt cleanup, rolled back",
+  "hosted_permissions": {
+    "anonymous_execute": false,
+    "authenticated_execute": true,
+    "private_receipt_rls": true,
+    "browser_receipt_read": false,
+    "version_triggers": 2
+  },
+  "manual_user_editor_check": "passed; user confirmed all guided editor checks",
+  "credentials_recorded": false
+}

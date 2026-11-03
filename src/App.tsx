@@ -2,6 +2,7 @@ import { Link, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
+import SurveyEditorPage from './pages/SurveyEditorPage'
 import AuthProvider from './components/AuthProvider'
 import ProtectedRoute from './components/ProtectedRoute'
 import { supabase } from './lib/supabase'
@@ -24,6 +25,8 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/surveys/new" element={<SurveyEditorPage key="new" />} />
+          <Route path="/surveys/:id/edit" element={<SurveyEditorPage />} />
         </Route>
         <Route
           path="*"

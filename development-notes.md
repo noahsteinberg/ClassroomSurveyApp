@@ -326,3 +326,46 @@ Local dev server remains available at http://127.0.0.1:5173/ for the user. No co
 ## 2026-11-02 ? Phases 3-4 publication authorized
 
 User authorized committing/pushing the verified login and independent dashboard work, excluding local credentials and temporary files. This supersedes the previous publication hold for these changes. Publication review checks staged paths, secret patterns, whitespace, and repository state; prior passing focused browser/build/lint/format and user login checks remain the evidence. No completed test suite or hosted database operation is repeated. Dependent later-phase controls remain disabled and their tasks unchecked.
+
+## 2026-11-02 ? Phase 5 survey editor and atomic draft saving
+
+### Authorization and accepted implementation choices
+
+User authorized Phase 5 implementation, addition/application of the draft-saving migration, focused checks, editor testing guidance, and TODO/notes updates. No commit or push. Later activation/presentation, duplication, results, and student UI remain unavailable.
+
+New Survey and draft Edit are enabled on the dashboard. Protected editor routes are /surveys/new and /surveys/:id/edit. The editor supports title, optional description, dynamic MC/TF questions, dynamic MC choices, confirmed deletion/type replacement, and accessible Move up/down controls. Stable UUID keys preserve entered text during reordering. TF choices remain fixed True/False in positions 1/2. Incomplete counts are allowed in drafts, but entered title/question/choice text must be nonblank; the UI explains that blank records must be filled or removed. This retains Phase 2's accepted distinction between draft validity and stricter activation completeness.
+
+Unsaved work is protected using React Router's data-router useBlocker for in-app/back navigation and beforeunload for refresh/tab close. Converted the top-level BrowserRouter wrapper to createBrowserRouter/RouterProvider; the existing route protection and login checks passed afterward. Cancel preserves edits, successful save clears dirty state, and discard/type/deletion actions require explicit confirmation. The save button and editor fields disable during a request; a synchronous ref prevents duplicate submissions before rerender. Conflicts preserve local text and offer a confirmed reload; other failures preserve the complete form for retry. No autosave or local draft-content persistence was added.
+
+### Applied migration and safety properties
+
+`supabase/migrations/20261103005809_save_draft.sql` was first verified in disposable local PostgreSQL, then applied through MCP to the reverified project hmrtffcpoyksnwdquyow. Preflight confirmed the intended URL, five existing public tables and the original two migration-history entries. apply_migration(save_draft) returned success. Hosted history assigned version 20261103005809; renamed the local migration to match without changing SQL bytes. UTC version date is November 3; local work date remains November 2.
+
+The authenticated-only SECURITY DEFINER save_draft_survey function has an empty search_path and uses the existing explicit instructor guard. It atomically saves metadata, questions, choices, deletions and consecutive positions while preserving IDs. It validates UUID uniqueness/parent membership, types/text/TF structure before writes, uses deferred ordering constraints for swaps, and locks the parent survey against activation or concurrent saves. It rejects active/closed/archived content and missing/deleted survey versions.
+
+Optimistic concurrency compares expected_updated_at to the locked survey version. Two new private after-triggers touch the survey timestamp on question/choice changes, so direct child edits also invalidate stale tabs. The save returns the final version after all child changes, not the earlier metadata-only version.
+
+A private operational table, draft_save_receipts, records request UUID, survey UUID, instructor UUID, exact request payload and result. It has RLS enabled and no browser table access; it is not an additional public application entity. New survey UUID is generated once in the editor. Unchanged uncertain retries reuse request/survey IDs; an exact retry returns the same result without inserting a duplicate survey. Changed payload under the same request ID is rejected; retrying an old request after a newer save is also a conflict. Receipts cascade when the survey is explicitly deleted. They persist with the draft otherwise; no unrequested cleanup/retention job was added.
+
+### Focused verification and evidence
+
+- `node scripts/test-database.mjs --draft-only`: all three migrations applied to fresh isolated PostgreSQL; **25 draft-save SQL assertions passed**. Coverage: anonymous/missing-identity denial, complete atomic creation, exact retry, request reuse rejection, stable question/choice ordering, returned final version, stale-writer rejection, validation preservation, private-receipt denial, injected late choice-write failure rolling back metadata/version/choices, omitted-question/choice deletion, direct child edit invalidating versions, incomplete draft save/activation rejection, cross-survey IDs, active/closed save rejection, receipt cleanup.
+- Added two local concurrent-session checks: simultaneous same-request creation yields one survey/one receipt; two saves with the same expected version yield one winner and one DRAFT_CONFLICT. Both passed. The script's draft-only option avoids repeating unrelated Phase 2 suites. Added npm run test:draft-db.
+- Hosted catalog check: anon RPC execute=false; authenticated execute=true; receipt RLS=true; authenticated receipt read=false; both version-touch triggers enabled.
+- Hosted synthetic transaction under authenticated SQL role with the actual instructor's claim interface passed create, exact retry, reorder, conflict, validation-preservation and receipt-cleanup assertions, then ROLLBACK. This verifies hosted function behavior, not password/JWT validation. No persistent synthetic rows were created by this agent check, and no user-owned draft was deleted. Real browser save/reload guidance was sent separately.
+- **Nine affected Playwright tests passed (16.1 seconds)**: four new editor scenarios cover reorder/save/reload/text/ID preservation, field validation/TF/deletion, uncertain retry ID reuse, conflict retention/unsaved navigation/non-draft rejection. Five existing auth/dashboard tests were updated only where New Survey/Edit availability and route wiring changed. Shared mocks live in tests/ui/helpers.ts; they intercept Supabase requests and do not mutate hosted data.
+- npm run lint, npm run build (TypeScript + Vite, 77 modules), and npm run format:check exited 0. Vite reports a nonfatal >500 kB main-chunk warning (~553 kB minified/~160 kB gzip). No unrelated performance tuning was attempted; measure the assignment's load target with later deployment checks before deciding on code splitting.
+
+Evidence summary is `supabase/verification/2026-11-02-phase5-draft-save.json`. The private receipt permissions and migration history were independently inspected after application. Supplied assignment/spec files and original applied migrations were preserved.
+
+### User test guidance and progress
+
+Asked the user to create ?Phase 5 editor check,? add/reorder questions and choices, save/reload, reopen through dashboard Edit, try fixed TF choices, save again, and test unsaved-navigation Cancel. The dev server remains at http://127.0.0.1:5173/dashboard. User confirmation is currently pending and has its own unchecked task; no manual result is invented. Any test draft the user creates is theirs to keep/delete through the UI.
+
+Checked Phase 5 implementation tasks based on automated/local/hosted verification, and the previously deferred New Survey/Edit tasks in Phase 4. Activate, Duplicate and Results remain disabled and unchecked. No login/password/account changes or credentials in reports. No commits or pushes.
+
+User subsequently replied ?All editor checks passed? to the guided real-browser create/edit/order/save/refresh/TF/unsaved-navigation test. Checked that task and updated the evidence summary. This supersedes the pending-manual-check statement above. Phase 5 verification is complete; testing stopped. No commit or push was made.
+
+## 2026-11-02 ? Phase 5 publication authorized
+
+User authorized committing/pushing verified Phase 5 work, excluding credentials and temporary files. This supersedes the earlier publication hold for the editor, applied migration, focused tests, evidence, and notes. Publication review is limited to staged-file/secret-pattern/whitespace checks and repository state; no completed tests or hosted operations are repeated.

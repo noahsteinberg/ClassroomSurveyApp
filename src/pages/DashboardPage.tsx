@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
 import ConfirmAction from '../components/ConfirmAction'
@@ -150,18 +151,14 @@ export default function DashboardPage() {
             >
               Refresh
             </button>
-            <button
-              className="button primary"
-              disabled
-              aria-describedby="upcoming"
-            >
+            <Link className="button primary" to="/surveys/new">
               New Survey
-            </button>
+            </Link>
           </div>
         </div>
         <p id="upcoming" className="mt-3 text-sm text-slate-600">
-          Coming next: survey creation, editing, duplication, activation, and
-          results. These controls are currently unavailable.
+          Coming next: duplication, activation, and results. These controls are
+          currently unavailable.
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_200px]">
           <div>
@@ -217,7 +214,7 @@ export default function DashboardPage() {
           <div className="panel mt-6 text-center">
             <h3 className="text-lg font-semibold">No surveys yet</h3>
             <p className="mt-2 text-slate-600">
-              Your surveys will appear here. Survey creation is coming next.
+              Create your first survey using New Survey above.
             </p>
           </div>
         ) : !visible.length ? (
@@ -257,13 +254,12 @@ export default function DashboardPage() {
                 >
                   {survey.status === 'draft' && (
                     <>
-                      <button
+                      <Link
                         className="button"
-                        disabled
-                        aria-describedby="upcoming"
+                        to={`/surveys/${survey.id}/edit`}
                       >
                         Edit
-                      </button>
+                      </Link>
                       <button
                         className="button"
                         disabled

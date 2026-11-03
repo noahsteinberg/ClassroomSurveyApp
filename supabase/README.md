@@ -172,3 +172,21 @@ Remove the ignored configuration when finished. The suite refuses to disturb an
 existing active survey and deletes only its own synthetic surveys. An interrupted
 run may require cleanup scoped to its unique test title marker. Never bulk-delete
 unrelated data. No private service key is needed.
+
+
+## Phase 5 atomic draft save
+
+Migration `20261103005809_save_draft.sql` is applied to the same verified project.
+It adds authenticated-only `save_draft_survey`, private RLS-protected retry receipts,
+and child-change version triggers. Requests include survey/request UUIDs, expected
+updated_at, title/description and ordered question/choice arrays. One transaction
+validates ownership and saves/deletes/reorders records. Exact retries are safe;
+stale versions and non-drafts are rejected. The frontend retains unsaved content
+on failure/conflict. Receipts are operational metadata, inaccessible to browser
+roles, and cascade on explicit survey deletion.
+
+Use `npm run test:draft-db` for the focused disposable local SQL/concurrency checks;
+use `npm run test:ui` for the editor and affected dashboard routing tests. See
+`verification/2026-11-02-phase5-draft-save.json` and development-notes.md for results.
+The hosted synthetic SQL verification transaction was rolled back. Do not rerun
+unrelated Phase 2 suites for editor-only changes without a relevant concern.

@@ -1,8 +1,8 @@
 # Classroom Survey App
 
 React + TypeScript + Vite project for the CSE 4095 classroom survey assignment.
-Instructor login and the dashboard are implemented. Survey creation/editing,
-activation/presentation, duplication, results/CSV, student pages, and deployment
+Instructor login and the dashboard are implemented. Survey creation/editing is implemented with atomic draft saving.
+Activation/presentation, duplication, results/CSV, student pages, and deployment
 remain pending; their dashboard controls are explicitly unavailable.
 
 ## Local setup
@@ -31,7 +31,8 @@ npm run preview
 
 `src/pages` holds route pages, `src/components` shared UI, `src/lib` data helpers,
 `supabase/migrations` future versioned database changes, and `public` static assets.
-Tailwind uses its Vite plugin. React Router serves `/`, `/login`, and protected `/dashboard`; unknown/future routes
+Tailwind uses its Vite plugin. React Router serves `/`, `/login`, protected `/dashboard`, `/surveys/new`, and
+`/surveys/:id/edit`; unknown/future routes
 show an unavailable page.
 Supabase, Recharts, and qrcode are installed for later phases.
 
@@ -60,8 +61,8 @@ Dashboard surveys load newest first. Search by title and filter by status.
 Close is available for active surveys; Archive for closed surveys; Delete for
 nonactive surveys. Every action has confirmation; Delete warns that all responses
 will be permanently removed. Closing never makes collected content editable.
-New Survey, Edit, Activate, Duplicate, and View Results remain disabled until their
-later-phase workflows exist. There are no fake navigation links for those controls.
+New Survey and draft-only Edit are available. Activate, Duplicate, and View Results
+remain disabled until their later-phase workflows exist. There are no fake navigation links for those controls.
 
 Focused checks:
 
@@ -84,3 +85,30 @@ log out, then revisit `/dashboard` and confirm the login redirect. Real survey-c
 rendering and mutation interactions are covered by mock browser tests; live backend
 operations were verified in Phase 2. No extra hosted fixtures were created for this
 frontend pass.
+
+
+## Draft editor (Phase 5)
+
+New Survey and draft Edit open the protected editor. Use Move up/Move down for
+questions and multiple-choice options. True/False has fixed read-only choices.
+Deleting questions/choices or changing type requires confirmation. Navigation away
+from unsaved work warns, including browser back and page refresh/tab close.
+
+Save Draft commits metadata, questions, choices, deletions and consecutive ordering
+in one database transaction. Existing IDs remain stable. Concurrent edits use the
+loaded updated_at version; a conflict keeps local text and offers a confirmed reload.
+Retries of an unchanged failed save reuse its request ID and survey ID to avoid
+accidental duplicate surveys. Private retry receipts are not exposed to browsers.
+All draft content edits update the survey version, including direct child-table edits.
+
+A title and nonblank text for every entered question/choice are required. Incomplete
+counts are allowed: drafts may have zero questions or MC options fewer than two.
+Fill in or delete blank rows before saving. Activation will enforce complete survey
+structure later. Activate stays unavailable. Active/closed/archived editor URLs are
+blocked, and the save RPC independently rejects non-drafts.
+
+Focused checks: `npm run test:draft-db` uses disposable local PostgreSQL and only
+tests draft saving/ordering/conflicts/rollback/retries; `npm run test:ui` includes
+four editor tests and affected dashboard/auth tests with mocked Supabase APIs.
+Neither command changes hosted data. The applied draft-saving migration is
+`supabase/migrations/20261103005809_save_draft.sql`.

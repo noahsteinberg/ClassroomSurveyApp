@@ -64,8 +64,8 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Load surveys from Supabase.
 - [x] Display survey title, status, and creation date.
 - [x] Add status badges for Draft, Active, Closed, and Archived.
-- [ ] Add a New Survey button.
-- [ ] Add Edit action.
+- [x] Add a New Survey button.
+- [x] Add Edit action.
 - [ ] Add Duplicate action.
 - [x] Add Delete action.
 - [x] Add Archive action.
@@ -79,21 +79,21 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 5 — Survey Editor
 
-- [ ] Create a survey editor page.
-- [ ] Add survey title field.
-- [ ] Add optional description field.
-- [ ] Add questions dynamically.
-- [ ] Support Multiple Choice questions.
-- [ ] Support True / False questions.
-- [ ] Add answer choices dynamically.
-- [ ] Reorder questions.
-- [ ] Reorder choices.
-- [ ] Delete questions.
-- [ ] Delete choices.
-- [ ] Validate required fields.
-- [ ] Save a survey as Draft.
-- [ ] Load an existing survey for editing.
-- [ ] Enforce draft-only editing: active, closed, and archived content stays immutable; duplicate into a new draft for changes (accepted change from the supplied close-then-edit task; see development-notes.md).
+- [x] Create a survey editor page.
+- [x] Add survey title field.
+- [x] Add optional description field.
+- [x] Add questions dynamically.
+- [x] Support Multiple Choice questions.
+- [x] Support True / False questions.
+- [x] Add answer choices dynamically.
+- [x] Reorder questions.
+- [x] Reorder choices.
+- [x] Delete questions.
+- [x] Delete choices.
+- [x] Validate required fields.
+- [x] Save a survey as Draft.
+- [x] Load an existing survey for editing.
+- [x] Enforce draft-only editing: active, closed, and archived content stays immutable; duplicate into a new draft for changes (accepted change from the supplied close-then-edit task; see development-notes.md).
 
 ---
 
@@ -360,7 +360,17 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Pass focused browser tests for protected access, incorrect login, session restoration/logout, list/search/status filters, confirmation cancel/close/archive/delete, empty/error/retry states, disabled future controls, and a 390px mobile layout.
 - [x] User verifies actual instructor login, displayed email, refresh persistence, logout, and protected dashboard redirect against the hosted project.
 - [x] Pass lint, TypeScript/production build, and formatting checks for the affected frontend and tests.
-- [ ] Enable New Survey and draft Edit after the Phase 5 editor exists; current controls are explicitly unavailable.
+- [x] Enable New Survey and draft Edit after the Phase 5 editor exists; verified in Phase 5.
 - [ ] Enable Activate with Phase 6 activation/presentation flow; current control is explicitly unavailable despite the existing database RPC.
 - [ ] Enable View Results after Phase 9 results page exists.
 - [ ] Enable Duplicate after Phase 12 copying flow and the editor exist.
+
+
+# Phase 5 focused verification - November 2, 2026
+
+- [x] Apply save_draft migration to the verified hosted project and align its local filename with migration history.
+- [x] Verify authenticated-only save RPC and inaccessible private idempotency receipts with RLS.
+- [x] Pass 25 focused local SQL assertions plus concurrent retry/stale-writer checks.
+- [x] Pass nine affected browser tests, including four editor scenarios (ordering/reload, validation/TF/deletion, retry IDs, conflicts/navigation/non-draft rejection).
+- [x] Verify hosted save/retry/order/conflict/validation/receipt cleanup in a rolled-back synthetic transaction.
+- [x] User verifies editor create/edit/reorder/save/refresh/TF and unsaved-change warning in the real browser.

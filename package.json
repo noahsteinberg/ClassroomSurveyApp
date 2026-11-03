@@ -12,7 +12,8 @@
     "format:check": "prettier --check src scripts tests playwright.config.ts vite.config.ts eslint.config.js index.html package.json tsconfig*.json .prettierrc.json",
     "test:db": "node scripts/test-database.mjs",
     "test:hosted": "node scripts/test-hosted.mjs",
-    "test:ui": "playwright test"
+    "test:ui": "playwright test",
+    "test:draft-db": "node scripts/test-database.mjs --draft-only"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
