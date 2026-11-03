@@ -224,15 +224,15 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 # Phase 15 — Deployment
 
 - [x] Push the project to GitHub.
-- [ ] Create the Cloudflare Pages site.
-- [ ] Connect Cloudflare Pages to the GitHub repository.
-- [ ] Configure production environment variables.
-- [ ] Deploy the application.
-- [ ] Configure SPA routing.
-- [ ] Verify production login.
-- [ ] Verify QR codes point to the production URL.
-- [ ] Test student submissions in production.
-- [ ] Test instructor results in production.
+- [x] Create the Cloudflare Pages site.
+- [x] Connect Cloudflare Pages to the GitHub repository.
+- [x] Configure production environment variables.
+- [x] Deploy the application; user reported success and actual Chrome loaded https://classroomsurveyapp.pages.dev/ over HTTPS.
+- [x] Configure SPA routing.
+- [x] Verify production login.
+- [x] Verify QR codes point to the production URL.
+- [x] Test student submissions in production.
+- [x] Test instructor results in production.
 
 ---
 
@@ -291,9 +291,9 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Test CSV metadata, timestamps, column ordering, Unicode, quotes, commas, newlines, empty results, and formula-like cells; open in a spreadsheet application.
 - [x] Test loading, offline/network failures, retry behavior, missing/closed links, and friendly errors with no raw database exceptions.
 - [x] Verify keyboard navigation, labels, focus, contrast, numeric chart alternatives, 44px student touch targets, mobile/tablet layouts, and projector readability.
-- [ ] Test actual phone QR scanning, downloaded QR PNG, fallback URL, and two browsers; record device/browser versions. Desktop PNG/fallback URL and Chrome/Edge verified; phone scan remains pending.
-- [ ] Define a reproducible page-load measurement and test the specified average under 2 seconds; record conditions and results. Measurement protocol defined in development-notes.md; local/public timed measurements remain pending.
-- [ ] Test at least 200 simultaneous students using synthetic tokens in an isolated test dataset; verify latency, errors, exact stored counts, and resource limits. Document any unmet target honestly.
+- [x] Test actual phone QR scanning, downloaded QR PNG, fallback URL, and two browsers; recorded iPhone 17 Pro/iOS 26.6.1/Safari (separate Safari version not reported), Wi-Fi/cellular and Chrome/Edge evidence.
+- [ ] Define a reproducible page-load measurement and test the specified average under 2 seconds; record conditions and results. Public 10 cold/10 warm samples per route recorded; cold means passed, but warm results mean 2289ms exceeded target. Local timing not used as a substitute; overall target remains unfulfilled.
+- [x] Test 200 overlapping synthetic submission API clients on an isolated test-owned survey: 200 successes, 200 responses/400 answers, p95 1437ms, cleanup passed. This is not 200 full browsers; direct resource telemetry unavailable and limits documented.
 
 # Required additions to Phase 15 ? Repository and deployment
 
@@ -416,8 +416,9 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Verify tablet portrait/landscape layouts and student controls at least 44px tall.
 - [x] Pass four missing Chrome scenarios and twelve targeted second-browser Edge scenarios; record browser versions.
 - [x] User verifies actual Edge instructor login, dashboard refresh, Closed-survey results, CSV download, logout and protected redirect.
-- [ ] Verify actual phone scan and full public deployment workflow after deployment.
-- [ ] Measure the under-two-second page-load target and 200-simultaneous-student capacity; functional mock tests are not performance evidence.
+- [x] Verify actual phone scan and guided public deployment workflow; user confirmed, device/network details recorded.
+- [x] Measure public page loads and 200-client API capacity with isolated synthetic data; see phase15-performance.json.
+- [ ] Fulfill the <2-second target across tested profiles: warm results mean was 2.289s, so do not claim a complete pass.
 
 ## Phase 15 preparation (2026-11-03; not deployed)
 
@@ -426,5 +427,21 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Install from the unchanged lockfile in a clean tracked-source snapshot with fresh Linux dependencies; pass TypeScript and production build under Node 22.23.4/npm 10.9.9.
 - [x] Smoke-test emitted production assets, ten local direct routes/redirects, public form/closed state, 320px layout and focus styling without hosted mutations.
 - [x] Verify repository-root/main/build/dist settings, safe environment variable names, README local links, ignored credentials/artifacts and absence of a top-level 404 override.
-- [ ] Create/connect the actual Cloudflare Pages project, enter production build settings/variables and deploy after authorization.
+- [x] Create/connect the actual Cloudflare Pages project, enter production build settings/variables and deploy; observed dashboard/build log and public site verify completion.
 - [ ] Verify the published repository from a fresh clone after publication, then actual Cloudflare/public/phone/performance acceptance checks.
+
+## Initial public verification (2026-11-03)
+
+- [x] Verify HTTPS home/login, signed-out dashboard redirect and missing public-survey deep link in actual Chrome without API mocks.
+- [x] User verifies production instructor session and physical phone QR/submission/results/CSV/close workflow.
+- [x] Record phone model/OS and test networks: user reports iPhone 17 Pro, iOS 26.6.1; Wi-Fi and cellular both worked.
+- [x] Record phone browser: Safari on reported iOS 26.6.1; exact Safari version not separately reported.
+
+## Phase 15 deployment/performance evidence (2026-11-03)
+
+- [x] Read Cloudflare build log and confirm deployed commit 3cd541211a17f51274196cdea0f0b7390cc358b6, Node 22.23.4/npm 10.9.9, build/dist settings and successful publication.
+- [x] Inspect Auth URL configuration; report initial localhost Site URL/empty redirect list and record user's confirmation of saving the public Site URL.
+- [x] Run actual public page-load measurements (60 retained samples) and 200 concurrent API submissions; verify exact synthetic counts and cleanup.
+- [x] Verify other survey metadata unchanged and sign out the temporary instructor session; save no credentials.
+- [x] Disclose warm-results load target miss (mean 2.289s, p95 8.529s); retain all samples and note unknown cause. User requested no performance changes and stopped testing.
+- [x] Record corrected Auth Site URL as user-confirmed; independent reread not performed after Escape, and no further testing planned.

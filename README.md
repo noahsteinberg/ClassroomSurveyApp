@@ -6,8 +6,9 @@ Supabase, Recharts and qrcode. [GitHub repository](https://github.com/noahsteinb
 Implemented: instructor login, dashboard/history filters, draft editing,
 activation/closure/archive/delete, QR presentation, anonymous submissions,
 duplicate protection, results/charts, CSV export and survey duplication. Local
-Chrome/Edge workflows are verified. Public deployment, physical phone scanning
-and measured performance/capacity acceptance remain pending. No verified public URL yet.
+Chrome/Edge workflows are verified. The public app is live at
+https://classroomsurveyapp.pages.dev/; the user confirmed the phone workflow on
+iPhone/Safari over Wi-Fi and cellular. Performance results and limits are below.
 
 ## Architecture and data flow
 
@@ -183,7 +184,7 @@ state; later reports supersede old deferred-feature labels. Full formatting has
 known warnings in historical Phase 6-8/9-11 JSON reports; changed-file formatting
 is verified. The existing large-chunk build advisory is not measured load-time evidence.
 
-## Cloudflare Pages settings - prepared, not deployed
+## Cloudflare Pages settings
 
 Sign into Cloudflare, choose Workers & Pages -> Pages -> import an existing Git
 repository, and authorize `noahsteinberg/ClassroomSurveyApp`.
@@ -220,22 +221,31 @@ References: [React build settings](https://developers.cloudflare.com/pages/frame
 [Git deployments](https://developers.cloudflare.com/pages/get-started/git-integration/),
 [Supabase Auth URLs](https://supabase.com/docs/guides/auth/redirect-urls).
 
-## Remaining public acceptance
+## Public verification and performance limits
 
-After an authorized deployment, verify HTTPS/build logs, deep links/reloads,
-instructor login/session/logout, public restrictions and one synthetic workflow:
-create/edit -> activate -> physical phone scan -> anonymous submit -> duplicate refresh ->
-count -> results -> CSV -> close. Inspect persisted records and the closed phone link;
-test downloaded PNG/fallback URL, record phone OS/browser versions and confirm
-Chrome/Edge behavior. Activating a test survey closes any existing active one; use
-an agreed test window.
+The Cloudflare build log confirmed deployment of commit `3cd5412`, Node
+22.23.4/npm 10.9.9 and successful publication. Public browser checks and user
+confirmation cover login, phone QR/anonymous submission, duplicate refresh,
+count/results/CSV, PNG download, closure and closed-link behavior. The user reports
+Safari on iPhone 17 Pro/iOS 26.6.1 over Wi-Fi and cellular. The corrected Supabase
+Site URL is user-confirmed; an independent reread was not completed.
 
-Measure usable-page load with ten cold and ten warm samples per representative
-route, recorded browser/device/network/cache/dataset conditions, mean and p95,
-comparing cold means with <2 seconds. Test 200 simultaneous distinct-token clients
-through the real API against isolated test-owned data, recording latency/errors,
-exact response/answer counts, resource limits and cleanup. Both targets remain
-unverified; unit tests and two-request races are not capacity evidence.
+An isolated two-question test accepted 200 overlapping anonymous API submissions
+with no errors, exactly 200 responses/400 answers, p95 1437ms, and verified cleanup.
+This is one workload on one network, not 200 full browser instances or every device
+condition. Other survey metadata remained unchanged.
+
+All 60 measured page-load samples are preserved. Cold means were 521ms (student),
+554ms (dashboard), and 1472ms (results). Warm student/dashboard means also passed.
+Two successful warm-results loads took 5016ms and 8529ms, raising that mean to
+2289ms. Their cause is unknown. Thus 58/60 samples were below two seconds, but the
+**overall under-two-second target is not fully met**. No samples were discarded,
+no performance changes were made, and testing stopped at the user's request.
+
+See [public verification](tests/deployment/phase15-public-verification.json),
+[original performance samples](tests/deployment/phase15-performance.json) and the
+development notes for conditions, method and limitations. No private credentials
+or sessions are stored in those reports.
 
 Original assignment/specification documents are preserved. [TODO.md](TODO.md)
 tracks verified progress and remaining deployment, report, screenshots, private

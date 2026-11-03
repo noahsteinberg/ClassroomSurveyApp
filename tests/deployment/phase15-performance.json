@@ -1,0 +1,133 @@
+{
+  "date": "2026-11-03T19:59:29.767Z",
+  "origin": "https://classroomsurveyapp.pages.dev",
+  "project_ref": "hmrtffcpoyksnwdquyow",
+  "fixture_survey_id": "4dc58477-d6b4-4bd0-b110-3e66ad32683d",
+  "synthetic_only": true,
+  "capacity": {
+    "clients": 200,
+    "peak_requests_in_flight": 200,
+    "release_spread_ms": 128,
+    "elapsed_ms": 1844,
+    "success": 200,
+    "failures": [],
+    "latency": {
+      "samples_ms": [
+        1368, 1433, 1444, 1446, 1429, 1428, 1442, 1442, 1441, 1441, 1440, 1424,
+        1439, 1440, 1423, 1422, 1437, 1420, 1419, 1434, 1432, 1418, 1434, 1418,
+        1417, 1433, 1429, 1433, 1430, 1432, 1428, 1432, 1427, 1431, 1428, 1431,
+        1427, 1426, 1426, 1427, 1431, 1426, 1425, 1424, 1424, 1424, 1420, 1419,
+        1418, 1419, 1416, 1420, 1415, 1419, 1414, 1416, 1410, 1410, 1411, 1407,
+        1406, 1435, 1433, 1405, 1432, 1404, 1411, 1403, 1410, 1402, 1410, 1429,
+        1404, 1403, 1429, 1426, 1425, 1401, 1401, 1427, 1398, 1397, 1424, 1396,
+        1424, 1396, 1424, 1423, 1397, 1401, 1395, 1394, 1395, 1393, 1422, 1421,
+        1396, 1394, 1421, 1416, 1391, 1391, 1414, 1417, 1390, 1413, 1391, 1416,
+        1389, 1418, 1388, 1437, 1400, 1414, 1410, 1399, 1414, 1411, 1397, 1413,
+        1432, 1390, 1432, 1382, 1429, 1378, 1404, 1386, 1377, 1397, 1380, 1419,
+        1388, 1411, 1408, 1406, 1365, 1406, 1404, 1381, 1401, 1402, 1385, 1415,
+        1391, 1412, 1366, 1393, 1389, 1417, 1416, 1407, 1406, 1405, 1382, 1417,
+        1411, 1417, 1419, 1419, 1410, 1409, 1409, 1409, 1408, 1408, 1408, 1407,
+        1407, 1407, 1412, 1406, 1411, 1405, 1379, 1372, 1403, 1402, 1393, 1407,
+        1407, 1411, 1410, 1411, 1407, 1406, 1409, 1411, 1400, 1406, 1406, 1409,
+        1410, 1412, 1406, 1347, 1410, 1410, 1410, 1410
+      ],
+      "mean_ms": 1411,
+      "p95_ms": 1437,
+      "max_ms": 1446
+    },
+    "durable_responses": 200,
+    "durable_answers": 400,
+    "unique_tokens": 200,
+    "complete_membership_correct": true,
+    "resource_observations": "HTTP outcomes and durable rows measured; no direct CPU/memory/quota telemetry available",
+    "passed": true,
+    "elapsed_note": "Elapsed includes API submission completion and subsequent durable-count queries."
+  },
+  "page_load": [
+    {
+      "route": "student",
+      "cold": {
+        "samples_ms": [598, 478, 539, 438, 501, 479, 505, 620, 540, 513],
+        "mean_ms": 521,
+        "p95_ms": 620,
+        "max_ms": 620
+      },
+      "warm": {
+        "samples_ms": [194, 204, 261, 196, 202, 234, 222, 212, 182, 217],
+        "mean_ms": 212,
+        "p95_ms": 261,
+        "max_ms": 261
+      },
+      "cold_mean_under_2000ms": true,
+      "warm_mean_under_2000ms": true
+    },
+    {
+      "route": "dashboard",
+      "cold": {
+        "samples_ms": [543, 506, 473, 474, 520, 464, 504, 496, 518, 1045],
+        "mean_ms": 554,
+        "p95_ms": 1045,
+        "max_ms": 1045
+      },
+      "warm": {
+        "samples_ms": [264, 273, 205, 193, 246, 239, 212, 305, 230, 224],
+        "mean_ms": 239,
+        "p95_ms": 305,
+        "max_ms": 305
+      },
+      "cold_mean_under_2000ms": true,
+      "warm_mean_under_2000ms": true
+    },
+    {
+      "route": "results",
+      "cold": {
+        "samples_ms": [
+          1505, 1560, 1527, 1533, 1487, 1505, 1115, 1483, 1496, 1506
+        ],
+        "mean_ms": 1472,
+        "p95_ms": 1560,
+        "max_ms": 1560
+      },
+      "warm": {
+        "samples_ms": [939, 5016, 8529, 1908, 1437, 938, 896, 886, 1432, 905],
+        "mean_ms": 2289,
+        "p95_ms": 8529,
+        "max_ms": 8529
+      },
+      "cold_mean_under_2000ms": true,
+      "warm_mean_under_2000ms": false
+    }
+  ],
+  "environment": {
+    "platform": "win32",
+    "node": "v25.2.0",
+    "cpu_throttling": "none",
+    "network": "Actual laptop internet; unthrottled, connection type not inferred",
+    "viewport": "1280x800 desktop",
+    "browser": "156.0.8078.80"
+  },
+  "limitations": [
+    "200 overlapping anonymous API submissions, not 200 full browser instances or physical devices",
+    "Single laptop/network and one two-question test survey on the existing free project",
+    "Cold browser contexts isolate HTTP cache/storage, but DNS/TLS/OS and Cloudflare edge caches may remain warm",
+    "Desktop unthrottled timings do not establish every mobile/network condition"
+  ],
+  "cleanup": {
+    "passed": true,
+    "owned_fixture_removed": true,
+    "dependent_content_responses_answers_removed": true,
+    "other_survey_metadata_unchanged": true
+  },
+  "failures": [],
+  "page_load_target_met": false,
+  "assessment": "200-client API capacity check passed for this workload; cold route means met <2s, but warm results mean 2289ms did not. No samples discarded.",
+  "review_decision": {
+    "testing": "Stopped at user request; no performance changes",
+    "page_samples_under_2000ms": 58,
+    "page_samples_total": 60,
+    "slow_outliers_ms": [5016, 8529],
+    "outlier_cause": "Unknown; successful slow page loads, not recorded HTTP/application errors",
+    "original_samples_preserved": true,
+    "overall_target": "Not fully met: warm results mean 2289ms; all cold route means and the other warm route means were below 2000ms"
+  }
+}

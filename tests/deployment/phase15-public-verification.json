@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-03",
+  "url": "https://classroomsurveyapp.pages.dev/",
+  "browser": "Installed Chrome, headless",
+  "mocked_supabase": false,
+  "passed": [
+    "HTTPS home",
+    "Direct login",
+    "Signed-out dashboard redirects to login",
+    "Missing public survey deep link renders expected state"
+  ],
+  "initial_probe": "Python urllib HTTP 403; actual Chrome checks HTTP 200",
+  "pending": [
+    "Overall <2s page-load target not fully met; disclosed warm-results outliers retained, testing stopped at user direction"
+  ],
+  "hosted_mutations": false,
+  "manual_public_workflow": "User confirmed public workflow and phone scan passed: instructor login/refresh, create/activate, anonymous phone QR submission, duplicate refresh, count/results/CSV, PNG download, closure and closed-link reload",
+  "device_details": {
+    "model": "iPhone 17 Pro",
+    "os": "iOS 26.6.1",
+    "browser": "Safari",
+    "networks": ["Wi-Fi", "cellular data"],
+    "user_observation": "Public phone workflow worked on both Wi-Fi and cellular data; no timings measured.",
+    "browser_version": "Not separately reported"
+  },
+  "deployed_commit": {
+    "sha": "3cd541211a17f51274196cdea0f0b7390cc358b6",
+    "source": "Observed Cloudflare deployment dashboard build log; FETCH_HEAD and HEAD match; successful assets publication",
+    "build_node": "22.23.4",
+    "build_npm": "10.9.9",
+    "build_command": "npm run build",
+    "output": "dist"
+  },
+  "auth_urls": {
+    "initial_observed_site_url": "http://localhost:3000",
+    "initial_observed_redirect_urls": [],
+    "production_site_url": "https://classroomsurveyapp.pages.dev",
+    "confirmation": "User confirmed Site URL saved after mismatch was reported; independent UI reread stopped by physical Escape",
+    "redirect_urls": "No entries initially observed; user instructed to retain empty list for password-only login",
+    "verification_limit": "Saved public URL confirmed by user; no further independent UI check planned after user stopped testing"
+  },
+  "performance_report": "tests/deployment/phase15-performance.json",
+  "publication": "User authorized commit and push of verified deployment/performance evidence; no runtime performance changes"
+}

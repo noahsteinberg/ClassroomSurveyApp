@@ -614,3 +614,58 @@ Evidence: tests/deployment/phase15-preparation.json. Checked only completed prep
 ### Phase 15 preparation publication
 
 User authorized committing and pushing the verified deployment preparation before pressing Save and Deploy. Publication includes README, Node 22.23.4 pin, TODO, notes and the clean-build evidence. Credentials, temporary build/browser files and four user screenshots are excluded. Reviewed staged paths, credential patterns and whitespace; the completed clean Linux build and production-preview checks remain the verification evidence. No Cloudflare deployment command or dashboard action is performed by this publication. Public deployment results will be recorded separately after observation.
+
+## 2026-11-03 - Initial public deployment verification
+
+User reported Cloudflare Pages deployment success at https://classroomsurveyapp.pages.dev/. Actual Chrome checks without mocked Supabase passed HTTPS home/login, signed-out dashboard redirect and a direct missing public survey link (HTTP 200 app shell; expected Survey not found state). This verifies public SPA handling and real anonymous availability lookup for that missing slug, not full production authorization or the remaining workflow. Initial Python urllib probe received HTTP 403; actual Chrome loaded all four checks successfully, so the probe response is not treated as an application failure. Requested private instructor login/refresh and synthetic phone QR/submission/duplicate/count/results/CSV/close workflow, plus phone OS/browser details. Awaiting confirmation. No hosted data mutated by automated checks; no credentials captured. Production build logs/commit identity, full public workflow, phone and performance targets remain unverified. No commit or push.
+
+### Public workflow and phone scan confirmed
+
+User confirmed the guided public workflow and physical phone QR scan passed: production instructor login/dashboard refresh, complete test-survey creation/activation, anonymous phone submission, refresh duplicate protection, instructor count/results/CSV, QR PNG download, closure and closed phone-link reload. Checked the corresponding original production login/QR/submission/results tasks and separate manual workflow task. Asked for phone model, OS/browser versions and cellular/Wi-Fi details; those remain pending rather than inferred. This confirmation does not establish timed page-load or 200-student capacity targets, all-route reload/logout/authorization checks, Auth Site URL configuration or deployed commit identity. No additional tests or hosted mutations performed by the agent; no commit or push.
+
+### Phone device and network details
+
+User reports iPhone 17 Pro running iOS 26.6.1. The public phone workflow worked on both Wi-Fi and cellular data. No timings were supplied; this confirms connectivity, not the under-two-second performance target. User subsequently confirmed Safari; its exact version was not separately reported. Updated the report/TODO with verified user-provided details; no new tests, commits or pushes.
+
+User confirmed Safari for the successful iPhone public workflow. Recorded Safari on reported iOS 26.6.1 without inventing a separate browser version. No new tests, commits or pushes.
+
+
+## 2026-11-03 - Deployed revision, Auth URLs and measured performance
+
+Verified the Cloudflare dashboard build log through the computer-use skill's read-only UI workflow. It shows FETCH_HEAD/HEAD 3cd541211a17f51274196cdea0f0b7390cc358b6, Node 22.23.4/npm 10.9.9, npm clean-install, npm run build, dist output, 695 modules and successful asset publication/site deployment. The main/project URL and production Supabase configuration agree with the prepared repository. No redeployment or setting changes were made by the agent.
+
+Supabase MCP execute_sql failed with an OAuth token-refresh parse error. Used the already signed-in dashboard only to inspect Auth URLs: Site URL was http://localhost:3000, Redirect URLs empty. Reported the mismatch; user confirmed saving https://classroomsurveyapp.pages.dev as Site URL. Password login does not use an email/OAuth redirect callback; no extra redirect allow-list entries were needed for the current app. The attempted independent reread was stopped by the user pressing physical Escape. Stopped all further Computer Use and recorded the correction as user-confirmed rather than independently observed. No security setting was modified through agent UI automation.
+
+### Isolated test method and privacy
+
+Added scripts/test-performance.mjs and scripts/performance-checks.mjs, adapting the prior loopback-only nonce-protected login pattern. Reads only the two browser-safe configuration values from ignored .env.local. User signed into the temporary local form privately; credentials went to Supabase Auth over HTTPS and the confirmed instructor session stayed in memory. No credentials, browser storage-state file, trace, HAR, password or JWT were saved in reports or chat. Temporary session was signed out and helper stopped afterward.
+
+The real instructor API read existing survey id/status/updated_at metadata and required zero pre-existing active surveys before creating/activating a uniquely identified test-owned draft, with a second active-survey guard before activation. Used two synthetic questions (MC and TF), two choices each, 200 unique synthetic UUID tokens and one answer per question. No user survey was activated, closed, edited or deleted. Test requests used the actual hosted Data API and public deployed frontend, without mocked requests. Isolation was by owned survey/IDs in the existing project, not a separate paid branch or project. Existing active class data would have stopped the run before activation.
+
+### Capacity results
+
+Released 200 anonymous submission API clients behind one barrier: peak 200 in flight, observed client release spread 128ms, 200/200 HTTP/application successes, zero errors. Submission mean 1411ms, p95 1437ms, maximum 1446ms. Recorded elapsed 1844ms includes submission completion and subsequent durable-count queries. Real instructor reads confirmed exactly 200 responses, 200 unique tokens and 400 answers, with both correct question/choice memberships on every response. This verifies the tested 200-client submission workload, not 200 complete browser instances, phones or all possible class/network conditions. Direct database CPU/memory/quota telemetry was unavailable; HTTP outcomes and durable records were measured. No rate-limit errors were observed in this run.
+
+### Public page-load results
+
+Windows laptop, Chrome 156.0.8078.80 headless, 1280x800, Node v25.2.0 test runner, no CPU/network throttling, actual internet connection (type not inferred). Ten cold browser contexts per route, then one warm-up navigation and ten warm same-context navigations per route. Cold contexts isolate HTTP cache/storage but not necessarily OS/DNS/TLS or Cloudflare edge caches. Timing is navigation-start to usable data/control state plus two animation frames: student heading/radios/Submit, dashboard rendered list containing the fixture, or results total/table for 200 responses. Browser auth session was injected only into ephemeral in-memory contexts for protected routes. Retained every sample.
+
+| Route | Cold mean / p95 | Warm mean / p95 |
+| --- | --- | --- |
+| Student | 521ms / 620ms | 212ms / 261ms |
+| Dashboard | 554ms / 1045ms | 239ms / 305ms |
+| Results (200 responses) | 1472ms / 1560ms | 2289ms / 8529ms |
+
+All cold means meet <2 seconds for this desktop profile. Warm results do not: samples included 5016ms and 8529ms outliers, retained without deletion or selective rerun. Their cause was not established; do not attribute them to Wi-Fi, cellular, database load or app code without evidence. The overall load-time target remains unfulfilled, even though cold means and other warm means pass. No performance claim about the user's phone networks is recorded.
+
+### Cleanup and focused validation
+
+Finally closed and deleted only the owned synthetic survey and verified zero remaining owned survey/questions/choices/responses/answers. Other survey metadata fingerprint was unchanged. Report: tests/deployment/phase15-performance.json, including raw 200 API latency samples and all 60 page-load samples. Public deployment report records commit proof and Auth URL evidence limitations. These independent API checks completed/cleaned up after the user stopped dashboard Computer Use; no further UI tools were called.
+
+Initial helper launch expected the old removed .env.hosted-test.local; updated this new helper to read existing .env.local configuration without creating a credential file, then launched successfully. Lint identified browser-only callback globals in the new script; qualified location/requestAnimationFrame through globalThis and reran lint successfully. This did not alter the requests or measurements and did not warrant another load run. Commands: node scripts/test-performance.mjs; npx eslint scripts/test-performance.mjs scripts/performance-checks.mjs; Prettier on changed scripts/reports; git diff --check. No runtime feature, schema, dependency, deployment, commit or push change.
+
+### Measurement review, stop-testing decision and publication
+
+User directed preserving the original measurements, documenting the two slow outliers/unknown cause, making no performance changes, stopping testing and committing/pushing the verified work. Exactly 58 of 60 page-load samples were below 2000ms; the two warm-results samples were 5016ms and 8529ms. They completed successfully and were not measured HTTP/application errors. All cold route means and the other warm route means met the threshold; warm results mean 2289ms did not, so the overall target remains unfulfilled. No samples were removed or replaced, and no new measurements or app optimizations were run. Test harnesses/reports are retained for reproducibility, not scheduled for another run.
+
+Publication includes the existing verified hosted-test scripts, sanitized public/performance evidence, README status, TODO and these notes. Environment credentials, browser/build temporary artifacts and the four user screenshots are excluded. Review staged paths, credential patterns, whitespace and remote synchronization only; completed testing is not repeated. Cloudflare Git integration may rebuild after this main push; runtime source/dependencies are unchanged. The last dashboard-confirmed deployment commit remains 3cd5412 until a later deployment is observed.
