@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
+import { readPages } from '../lib/results'
+import { localDateKey } from '../lib/history'
 import ConfirmAction from '../components/ConfirmAction'
 import ActivateSurvey from '../components/ActivateSurvey'
 import type { SurveyAction } from '../components/ConfirmAction'
@@ -28,6 +30,8 @@ export default function DashboardPage() {
   const [notice, setNotice] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('all')
+  const [fromDate, setFromDate] = useState('')
+  const [toDate, setToDate] = useState('')
   const [reload, setReload] = useState(0)
   const [busy, setBusy] = useState(false)
   const [logoutBusy, setLogoutBusy] = useState(false)
@@ -38,22 +42,31 @@ export default function DashboardPage() {
   useEffect(() => {
     const controller = new AbortController()
     const client = supabase!
-    void client
-      .from('surveys')
-      .select('id,title,description,status,created_at')
-      .order('created_at', { ascending: false })
-      .abortSignal(controller.signal)
-      .then(({ data, error: loadError }) => {
-        if (controller.signal.aborted) return
-        if (loadError)
+    void readPages<Survey>(
+      (from, to) =>
+        client
+          .from('surveys')
+          .select('id,title,description,status,created_at')
+          .order('created_at', { ascending: false })
+          .order('id')
+          .range(from, to)
+          .abortSignal(controller.signal),
+      controller.signal,
+    )
+      .then((data) => {
+        if (!controller.signal.aborted) {
+          setSurveys(data)
+          setError(null)
+          setLoading(false)
+        }
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
           setError(
             'Unable to load surveys. Check your connection and try Refresh.',
           )
-        else {
-          setSurveys(data as Survey[])
-          setError(null)
+          setLoading(false)
         }
-        setLoading(false)
       })
     return () => controller.abort()
   }, [reload])
@@ -114,9 +127,13 @@ export default function DashboardPage() {
       setConfirm(null)
     }
   }
+  const dateError = Boolean(fromDate && toDate && fromDate > toDate)
   const visible = surveys.filter(
     (s) =>
+      !dateError &&
       (status === 'all' || s.status === status) &&
+      (!fromDate || localDateKey(s.created_at) >= fromDate) &&
+      (!toDate || localDateKey(s.created_at) <= toDate) &&
       s.title.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()),
   )
   return (
@@ -158,7 +175,7 @@ export default function DashboardPage() {
           </div>
         </div>
         <p id="upcoming" className="mt-3 text-sm text-slate-600">
-          Coming next: duplication and results. These controls are currently
+          Coming next: survey duplication. These controls are currently
           unavailable.
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_200px]">
@@ -194,6 +211,52 @@ export default function DashboardPage() {
             </select>
           </div>
         </div>
+        <div className="mt-4 grid items-end gap-4 sm:grid-cols-3">
+          <div>
+            <label className="label" htmlFor="from-date">
+              Created on or after
+            </label>
+            <input
+              className="input"
+              id="from-date"
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="to-date">
+              Created on or before
+            </label>
+            <input
+              className="input"
+              id="to-date"
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+            />
+          </div>
+          <button
+            className="button"
+            onClick={() => {
+              setSearch('')
+              setStatus('all')
+              setFromDate('')
+              setToDate('')
+            }}
+          >
+            Clear filters
+          </button>
+        </div>
+        <p className="mt-2 text-sm text-slate-600">
+          Creation dates use your local timezone. Closed and archived surveys
+          retain their results.
+        </p>
+        {dateError && (
+          <p role="alert" className="error mt-4">
+            The start date must be on or before the end date.
+          </p>
+        )}
         {error && (
           <p role="alert" className="error mt-5">
             {error}
@@ -219,9 +282,7 @@ export default function DashboardPage() {
             </p>
           </div>
         ) : !visible.length ? (
-          <p className="panel mt-6">
-            No surveys match your search and status filter.
-          </p>
+          <p className="panel mt-6">No surveys match these filters.</p>
         ) : (
           <ul className="mt-6 grid gap-4 lg:grid-cols-2" aria-label="Surveys">
             {visible.map((survey) => (
@@ -275,13 +336,9 @@ export default function DashboardPage() {
                   >
                     Duplicate
                   </button>
-                  <button
-                    className="button"
-                    disabled
-                    aria-describedby="upcoming"
-                  >
+                  <Link className="button" to={`/surveys/${survey.id}/results`}>
                     View Results
-                  </button>
+                  </Link>
                   {survey.status === 'active' && (
                     <Link
                       className="button"

@@ -42,16 +42,14 @@ test('survey list, search/status filters and unavailable later features', async 
   await expect(
     page.getByRole('link', { name: 'New Survey', exact: true }),
   ).toHaveAttribute('href', '/surveys/new')
-  for (const name of ['Duplicate', 'View Results'])
+  for (const name of ['Duplicate'])
     await expect(
       page.getByRole('button', { name, exact: true }).first(),
     ).toBeDisabled()
   await page.getByLabel('Search by title').fill('RECURSION')
   await expect(page.getByRole('listitem')).toHaveCount(1)
   await page.getByLabel('Status', { exact: true }).selectOption('closed')
-  await expect(
-    page.getByText('No surveys match your search and status filter.'),
-  ).toBeVisible()
+  await expect(page.getByText('No surveys match these filters.')).toBeVisible()
   await page.getByLabel('Search by title').clear()
   await expect(
     page.getByRole('heading', { name: 'Trees closed' }),

@@ -1,0 +1,33 @@
+{
+  "local_date": "2026-11-02",
+  "scope": "Phases 9-11 results, historical filters, CSV",
+  "new_scenarios_passed": 7,
+  "affected_dashboard_scenarios_passed": 5,
+  "pagination_fixture": {
+    "responses": 1205,
+    "questions": 6,
+    "answers": 7230,
+    "response_offsets": [
+      0,
+      500,
+      1000
+    ],
+    "answer_pagination_beyond_500": true
+  },
+  "runs": "Initial: 8 passed, 4 failed due to mock IN parser/cold lazy-load waits. Fixed harness and reran the 4 affected tests with two workers; all passed.",
+  "decisions": {
+    "percentage": "all captured submitted responses; one decimal; zero=0%",
+    "history_date": "inclusive survey creation date in browser local timezone",
+    "csv": "one row per response; survey metadata, UTC timestamp and numbered ordered question-text columns; no tokens; empty=headers"
+  },
+  "manual_results": "passed; user confirmation",
+  "manual_spreadsheet": "passed; user-provided spreadsheet screenshot corroborated metadata and per-response answer columns",
+  "schema_changes": false,
+  "agent_created_hosted_fixtures": false,
+  "checks": {
+    "lint": "passed",
+    "build": "passed; existing main-chunk advisory remains",
+    "format": "passed"
+  },
+  "manual_active_results_refresh": "passed; user confirmed new submissions appear after Refresh Results while the survey stays active"
+}

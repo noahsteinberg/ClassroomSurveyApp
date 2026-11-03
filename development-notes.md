@@ -417,3 +417,46 @@ User subsequently confirmed ?Layout and workflow passed? for corrected student-c
 ## 2026-11-02 ? Phases 6-8 publication authorized
 
 User authorized committing/pushing the verified activation, QR presentation, public submission and duplicate-protection work. The laptop layout issue is recorded above: native fieldset legends overlapped card borders; moving the visual panel to an outer wrapper placed headings inside with consistent alignment while preserving semantic radio-group labels. The focused layout/submission check and user confirmation passed. Publication excludes local credentials and temporary artifacts. No completed tests or hosted operations are repeated. Phone QR scanning remains pending a reachable HTTPS URL.
+
+## 2026-11-02 ? Phases 9-11 results, history and CSV completed in order
+
+User authorized implementation in the reviewed order, documented decisions, focused checks, manual guidance, and notes/TODO updates; no commit or push. Built the protected results page first, then historical creation-date filtering, then CSV export. Reused the existing instructor Supabase client and RLS-protected tables; no new migration, RPC, permission change, hosted fixture, or backend test-suite repetition was needed.
+
+### Decisions and resulting behavior
+
+1. Results percentages use all captured submitted responses as the denominator, rounded to one decimal; zero responses gives 0.0%. Unanswered counts captured responses without a valid choice for that question, including missing/unavailable historical choices. Tables display every count/percentage and unanswered count, with Recharts bars as a complementary visual; meaning does not depend on color. No live/realtime results were added; Refresh Results reloads.
+2. Historical date filtering means inclusive **survey creation dates in the browser's local timezone**, not submission timestamps. It combines with existing title/status filters; invalid intervals have a clear message and Clear filters resets all controls. View Results works for Closed and Archived surveys. Filtering/reading never alters history.
+3. CSV contains one row per response. Repeated metadata columns: survey_id, survey_title, survey_description, survey_status, survey_created_at; then response_id, submitted_at, and numbered question-text columns in saved order. Numbering disambiguates duplicate question texts. Answer cells contain choice text, unanswered cells are blank, timestamps use ISO UTC, and zero responses yields headers only. Anonymous browser tokens are neither queried nor exported. Every cell is quoted/escaped; CRLF rows and UTF-8 BOM support spreadsheets. Formula-like text (including after leading whitespace) and leading tab/newlines are prefixed with an apostrophe so the export treats them as text.
+
+### Data access, consistency and interface
+
+Added src/lib/results.ts to load explicit ordered 500-row pages for questions/responses and batches of 100 IDs with 500-row pages for choices/answers. This prevents silent truncation at the Data API's default cap. Response IDs are captured/deduplicated once; counts, tables, charts and CSV all use that set. A draft revision change during loading is detected using updated_at. Page failures do not replace displayed data with a partial result; exports stay disabled during loading or after a failed refresh. Metadata, zero/empty states, manual refresh, dashboard return and active-only Present QR are provided. Results/CSV remain protected routes and queries under the existing instructor authorization.
+
+Independent REST requests are not a database-wide transaction snapshot. Concurrent submissions during/after loading can require another Refresh; this limitation is explicit in README. Existing captured response IDs keep related answer/export calculations consistent. Draft content can change only under the prior version controls and is checked again before committing the loaded dataset to the UI.
+
+Added pure result-summary.ts, history.ts and csv.ts helpers plus a lazy-loaded ResultsPage. Recharts is fetched on entering results instead of added to the student page's initial bundle. Enabled View Results on dashboard and presentation; Duplicate remains disabled. Dashboard survey loading now uses the same pagination helper so historical filters are not limited to the first default page.
+
+### Focused checks and problems resolved
+
+Added tests/ui/results.spec.ts with six browser scenarios plus one pure calculation/CSV scenario, and updated the five affected dashboard scenarios only where labels/availability changed. Initial run: eight passed, four failed in the test harness. The mock parser omitted the dot in PostgREST's in.(...) syntax, dropping the first question/response ID and producing incomplete synthetic answer data. Corrected that parser. Cold lazy Recharts loading under eight parallel dev-server workers exhausted short route assertions; added explicit route-readiness waits and reran only the four affected tests with two workers. All four passed (12.2 seconds). No production behavior was changed to conceal the fixture failures.
+
+All **12 affected scenarios passed across focused runs**:
+
+- Known 2/3 and 1/3 counts show 66.7%/33.3%, unanswered historical data is labeled, manual refresh updates totals, and archived results remain accessible.
+- Zero-response empty state and header-only CSV; page failure blocks partial export and successful Refresh recovers.
+- 1,205 synthetic responses with six questions/7,230 answers load through response offsets 0/500/1000 and answer pages beyond 500; final counts are complete.
+- Inclusive local creation-date boundary (UTC timestamp falling on the prior New York date), combined title/status filters, invalid interval and Clear filters.
+- Downloaded CSV filename, metadata, UTC timestamps, question order, quotes/commas/embedded newlines/Unicode, formula prefixes, one row per response, and no anonymous tokens.
+- Protected results route; five affected auth/dashboard/filter/mutation scenarios remain passing.
+
+npm run lint, npm run build (TypeScript + Vite, 692 modules), and npm run format:check exited 0 after the final code changes. Results has its own lazy chunk (~362 kB minified/~105 kB gzip). The previously known main-chunk advisory remains (~593 kB/~175 kB gzip); no broad performance tuning or unmeasured page-load claim was added. No unrelated database/editor/student suites were repeated.
+
+### Actual user verification and completion
+
+Guided the user through existing real survey results/counts/percentages/Refresh, dashboard title/status/date filters and Clear filters, Closed/Archived access, exporting and opening CSV in a spreadsheet to check metadata, row count, timestamps and answers. User replied **?Results/filtering and spreadsheet CSV passed.?** Recorded the spreadsheet application as unspecified rather than inventing Excel usage. This supplies the manual spreadsheet-open evidence beyond string/download checks. No credentials or real response content were copied into repository files.
+
+All original Phase 9, 10 and 11 tasks, the Phase 4 View Results action, and their focused verification tasks are now checked. Evidence: tests/ui/phases9-11-verification.json. Testing is stopped. Later duplication, actual phone QR/deployment, classroom performance and final submission tasks remain outside this pass. No commits or pushes were made.
+
+## 2026-11-02 ? Active results confirmation and Phases 9-11 publication
+
+User supplied a spreadsheet screenshot showing the expected metadata/timestamp/question columns and one row per response, then explicitly confirmed that results refresh worked while the survey remained active. Recorded both confirmations in the verification report and checked the active-refresh task. User authorized committing/pushing the verified Phases 9-11 work, excluding credentials and temporary files. Publication review checks staged paths, secret patterns, whitespace and repository state only; completed suites and hosted operations are not repeated. Excluded an incidental formatting-only change to the prior phase evidence.

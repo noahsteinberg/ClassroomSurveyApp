@@ -69,7 +69,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [ ] Add Duplicate action.
 - [x] Add Delete action.
 - [x] Add Archive action.
-- [ ] Add View Results action.
+- [x] Add View Results action.
 - [x] Add Activate action.
 - [x] Add Close action.
 - [x] Add search by survey title.
@@ -143,37 +143,37 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 9 — Results Dashboard
 
-- [ ] Create a results page for each survey.
-- [ ] Show total response count.
-- [ ] Aggregate answers by question.
-- [ ] Show counts for each choice.
-- [ ] Show percentages for each choice.
-- [ ] Add bar charts using Recharts.
-- [ ] Clearly label unanswered questions.
-- [ ] Add Refresh Results button.
-- [ ] Add link back to the main dashboard.
+- [x] Create a results page for each survey.
+- [x] Show total response count.
+- [x] Aggregate answers by question.
+- [x] Show counts for each choice.
+- [x] Show percentages for each choice.
+- [x] Add bar charts using Recharts.
+- [x] Clearly label unanswered questions.
+- [x] Add Refresh Results button.
+- [x] Add link back to the main dashboard.
 
 ---
 
 # Phase 10 — Historical Results
 
-- [ ] Allow viewing results for Closed surveys.
-- [ ] Allow viewing results for Archived surveys.
-- [ ] Add filtering by date.
-- [ ] Add filtering by survey title.
-- [ ] Preserve all historical response data.
+- [x] Allow viewing results for Closed surveys.
+- [x] Allow viewing results for Archived surveys.
+- [x] Add filtering by date.
+- [x] Add filtering by survey title.
+- [x] Preserve all historical response data.
 
 ---
 
 # Phase 11 — CSV Export
 
-- [ ] Add Export CSV button.
-- [ ] Export survey metadata.
-- [ ] Export one row per response.
-- [ ] Include submission timestamp.
-- [ ] Include each question and answer.
-- [ ] Create safe CSV escaping.
-- [ ] Test export with spreadsheet applications.
+- [x] Add Export CSV button.
+- [x] Export survey metadata.
+- [x] Export one row per response.
+- [x] Include submission timestamp.
+- [x] Include each question and answer.
+- [x] Create safe CSV escaping.
+- [x] Test export with spreadsheet applications.
 
 ---
 
@@ -273,7 +273,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Add visible presentation response count and refresh behavior; polling behavior verified in focused browser tests (live user workflow recorded separately).
 - [ ] Validate at least one question, nonblank title/question/choice text, at least two multiple-choice options, exactly True/False choices, stable ordering, and agreed required-answer rules.
 - [ ] Make duplication atomic or recover safely from failure; copy no responses or answers and issue a distinct public identifier.
-- [ ] Define result percentage denominator, rounding, zero-response behavior, and unanswered display.
+- [x] Define result percentage denominator, rounding, zero-response behavior, and unanswered display.
 
 # Required additions to Phase 14 ? Verification
 
@@ -362,7 +362,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Pass lint, TypeScript/production build, and formatting checks for the affected frontend and tests.
 - [x] Enable New Survey and draft Edit after the Phase 5 editor exists; verified in Phase 5.
 - [x] Enable Activate with Phase 6 activation/presentation flow; confirmed activation opens the protected QR presentation.
-- [ ] Enable View Results after Phase 9 results page exists.
+- [x] Enable View Results after Phase 9 results page exists.
 - [ ] Enable Duplicate after Phase 12 copying flow and the editor exist.
 
 
@@ -382,3 +382,14 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Recheck the nine affected dashboard/editor/auth scenarios after enabling activation and adding routes; all covered scenarios passed across focused runs.
 - [x] User verifies live activation, anonymous submission, count update, duplicate refresh, PNG download, and closure on the desktop.
 - [ ] Verify actual phone QR scanning and submission using a reachable HTTPS address during deployment/device testing; localhost QR cannot reach this computer from a phone.
+
+
+# Phases 9-11 focused verification - November 2, 2026
+
+- [x] Document all-responses percentage denominator/one-decimal rounding, inclusive local creation-date filtering, and response-row CSV format.
+- [x] Pass seven results/history/CSV scenarios plus five affected dashboard scenarios across focused runs, including 1,205-response/complete-answer pagination.
+- [x] Pass lint, production build, and formatting checks; reuse existing instructor client/RLS without migrations or extra hosted fixtures.
+- [x] User verifies real results, refresh, historical filters and Closed/Archived access.
+- [x] User opens the exported CSV in a spreadsheet application and confirms columns, row count, timestamps and answers.
+
+- [x] User verifies active-survey results refresh after another submission while the survey remains open.

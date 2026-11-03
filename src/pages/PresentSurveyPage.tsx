@@ -224,9 +224,9 @@ function Presentation({ id }: { id: string }) {
                     Download QR Code
                   </a>
                 )}
-                <button className="button" disabled>
+                <Link className="button" to={`/surveys/${id}/results`}>
                   View Results
-                </button>
+                </Link>
                 <button
                   className="button primary"
                   disabled={busy}
@@ -237,7 +237,7 @@ function Presentation({ id }: { id: string }) {
               </div>
               <p className="mt-3 text-sm text-slate-600">
                 Response count refreshes every five seconds while this page is
-                visible. Results are coming next.
+                visible.
               </p>
             </>
           )}

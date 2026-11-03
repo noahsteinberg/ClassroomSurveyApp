@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
@@ -8,6 +9,8 @@ import StudentSurveyPage from './pages/StudentSurveyPage'
 import AuthProvider from './components/AuthProvider'
 import ProtectedRoute from './components/ProtectedRoute'
 import { supabase } from './lib/supabase'
+
+const ResultsPage = lazy(() => import('./pages/ResultsPage'))
 
 export default function App() {
   if (!supabase)
@@ -31,6 +34,20 @@ export default function App() {
           <Route path="/surveys/new" element={<SurveyEditorPage key="new" />} />
           <Route path="/surveys/:id/edit" element={<SurveyEditorPage />} />
           <Route path="/surveys/:id/present" element={<PresentSurveyPage />} />
+          <Route
+            path="/surveys/:id/results"
+            element={
+              <Suspense
+                fallback={
+                  <main className="page">
+                    <p role="status">Loading results?</p>
+                  </main>
+                }
+              >
+                <ResultsPage />
+              </Suspense>
+            }
+          />
         </Route>
         <Route
           path="*"

@@ -3,7 +3,7 @@
 React + TypeScript + Vite project for the CSE 4095 classroom survey assignment.
 Instructor login and the dashboard are implemented. Survey creation/editing is implemented with atomic draft saving.
 Activation, QR presentation, anonymous student submissions, and duplicate protection
-are implemented. Duplication, results/CSV, and deployment remain pending.
+are implemented. Results, historical filtering and CSV export are implemented. Duplication and deployment remain pending.
 
 ## Local setup
 
@@ -61,8 +61,7 @@ Dashboard surveys load newest first. Search by title and filter by status.
 Close is available for active surveys; Archive for closed surveys; Delete for
 nonactive surveys. Every action has confirmation; Delete warns that all responses
 will be permanently removed. Closing never makes collected content editable.
-New Survey, draft-only Edit, and Activate are available. Duplicate and View Results
-remain disabled until their later-phase workflows exist. There are no fake navigation links for those controls.
+New Survey, draft-only Edit, and Activate are available. Duplicate remains disabled until its later-phase workflow exists. There are no fake navigation links for those controls.
 
 Focused checks:
 
@@ -122,8 +121,7 @@ server validation rejects incomplete surveys with a friendly message. Activation
 opens protected `/surveys/:id/present`; active dashboard cards also offer Present QR.
 The presentation shows title, large QR code, readable/copyable URL, downloadable PNG,
 response count, and confirmed Close Survey. Count polling is every five seconds while
-visible, stops on closed surveys, and is cleaned up on navigation. Results remains
-unavailable. Count queries are instructor-only and request counts rather than answers.
+visible, stops on closed surveys, and is cleaned up on navigation. View Results opens the protected results page. Count queries are instructor-only and request counts rather than answers.
 
 Public `/s/:slug` needs no login. It uses a separate nonpersistent Supabase client so
 a student preview never inherits a signed-in instructor's database permissions.
@@ -152,3 +150,53 @@ on the projection page. Do not claim device/production verification until perfor
 Focused browser tests are in `tests/ui/student-presentation.spec.ts`. They mock APIs
 and create no hosted data; prior Phase 2 database transaction/permission tests remain
 applicable because no database migration or backend function changed in this pass.
+
+
+## Results, historical filtering and CSV (Phases 9-11)
+
+View Results opens protected `/surveys/:id/results` for Draft, Active, Closed or
+Archived surveys. The instructor client reads existing RLS-protected tables;
+no new database function/migration is needed. Charts load on demand rather than
+adding Recharts to the student page's initial bundle. Refresh captures another set
+of results; no automatic live charts are implemented.
+
+All questions, choices, responses, and answers use explicit 500-row pages with
+stable ordering; response-ID batches of 100 keep answer requests bounded. The
+response IDs captured for a successful load are shared by counts/tables/charts/CSV.
+New responses arriving during/after a load can require Refresh; this is not a
+single database-wide transaction snapshot. Draft content changing during the load
+is detected using the existing version and rejected rather than mixing revisions.
+Any page failure prevents replacing results with a partial dataset, and export is
+disabled until a successful load/refresh. Zero responses show a clear empty state.
+
+Percentages use **all submitted responses**, rounded to one decimal. Unanswered is
+the number of captured responses without a valid selected choice for that question,
+including historical missing/deleted choices. Zero responses yields 0.0%. Each
+question has visible numeric counts/percentages and an unanswered label alongside
+a Recharts bar chart; meaning does not depend on color alone.
+
+Dashboard history uses existing title/status filters plus **inclusive survey creation
+dates in the browser's local timezone**. It does not filter submission timestamps.
+An invalid date interval has a clear message; Clear filters resets every filter.
+Filtering/read operations never change or delete history. Closed and Archived
+surveys remain readable through View Results; activation/editing rules are unchanged.
+
+Export CSV uses the currently loaded response set, one row per response. Metadata
+columns: survey_id, survey_title, survey_description, survey_status, survey_created_at,
+response_id and submitted_at. Question columns follow saved order and include their
+number and full question text so duplicate texts have distinct headers. Answers are
+choice text; unanswered cells are blank. Timestamps are ISO UTC. Anonymous browser
+tokens are never queried for results or exported. Zero responses exports headers only.
+
+Every cell is quoted with escaped quotes, CRLF row separators and UTF-8 BOM for
+spreadsheet compatibility. Text starting with formula characters (including after
+whitespace), tab or newlines is prefixed with an apostrophe. This intentionally
+preserves data as text instead of executing spreadsheet formulas. Commas, embedded
+newlines, quotes and Unicode are retained. No server endpoint or schema changes.
+
+Focused tests: `npm run test:ui -- tests/ui/results.spec.ts tests/ui/dashboard.spec.ts --workers=2`.
+They cover known calculations/zero/unanswered, API page errors, 1,205 responses and
+answer pagination, date boundaries, protected access, and CSV escaping/downloads.
+No hosted data is created or changed by these mocked browser checks. Manual check:
+open real survey results, verify counts, Refresh, exercise history filters, export,
+and open the file in Excel or another spreadsheet app to confirm columns/row counts.
