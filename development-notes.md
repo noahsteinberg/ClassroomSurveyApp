@@ -280,3 +280,49 @@ Testing is stopped. No additional database/schema/settings changes, commits, or 
 ## 2026-11-02 ? Phase 2 publication authorized
 
 User authorized committing and pushing the completed Phase 2 work. This supersedes the earlier no-commit/no-push hold for the recorded migrations, tests, evidence, and documentation. Hosted testing remains stopped; publication checks are limited to staged-file review, secret-pattern scanning, whitespace, and repository state. Prior passing build/lint/format and hosted test results remain the verification evidence; no database tests or hosted changes are repeated for publication.
+
+## 2026-11-02 ? Phases 3 and 4 frontend implementation
+
+User authorized login/dashboard implementation according to the reviewed plan, later features explicitly unavailable, focused checks, user testing guidance, and TODO/notes updates. No commit or push. Phase 2 testing remained stopped; no hosted surveys, schema, Auth settings, or user accounts were changed.
+
+### Implemented scope and decisions
+
+- Added configured Supabase browser client using VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY. Updated .env.example and README; local .env.local contains only the verified URL and publishable key and is ignored. No password, private key, or service-role key is stored. Missing configuration shows a clear setup message.
+- Added Auth provider/context: restore session with getSession, subscribe synchronously to onAuthStateChange (no awaited Supabase operations in the callback), unsubscribe on unmount, and avoid stale initial-state overwrites. Auth state is for interface routing; actual authorization remains hosted RLS/RPC checks.
+- Added /login with labeled email/password inputs, browser autocomplete, required validation, disabled in-flight controls, friendly incorrect-credential/confirmation/network feedback, and redirect of signed-in users to dashboard. Added landing-page Instructor Login link.
+- Protected /dashboard waits for session initialization, redirects signed-out users to login, shows instructor email, and offers local-session logout. Unknown/future routes show an unavailable page rather than a broken screen.
+- Dashboard loads survey metadata newest first, displays title/description/status/creation date, supports case-insensitive title search and status filtering, loading/error/retry/empty/no-match states, responsive cards and visible keyboard focus. Refresh reloads the authoritative data.
+- Close (active only), Archive (closed only), and Delete (nonactive only) use existing backend operations. Native modal dialogs confirm each action and focus Cancel initially; Escape cancels unless a request is in flight. Delete warns of irreversible removal of all responses and recommends archiving. Buttons disable during mutation, errors stay friendly, success reloads data. Closed content stays immutable.
+- New Survey, draft Edit, Activate, Duplicate and View Results are disabled with a visible coming-next explanation. These original Phase 4 tasks remain unchecked because editor/activation/results/copy workflows belong to Phases 5/6/9/12. No placeholder editor/result pages or fake actions were created. Phase 4 is intentionally partial at these documented dependencies.
+
+### Focused verification
+
+Added @playwright/test as a development dependency, playwright.config.ts, and five browser tests in tests/ui/dashboard.spec.ts. Tests launch installed Chrome headlessly, use an isolated dev server at 127.0.0.1:5174, inject dummy environment configuration, and intercept every request to the Supabase host. No live Auth credentials or database fixtures are used. Trace/screenshots are off and test artifacts are ignored. No additional database suite was run.
+
+Final `npm run test:ui`: **5 passed** (14.6 seconds):
+
+1. Signed-out protected redirect; friendly invalid login; successful login/email display; session restoration after reload; logout and blocked return to dashboard.
+2. Four survey statuses, survey list, case-insensitive search/status intersection and no-match state; later-feature controls disabled.
+3. Confirmation cancellation sends no mutation; Close/Archive/Delete call the intended API and update the displayed list; active surveys have no Delete action; irreversible-delete warning is present.
+4. Empty dashboard and disabled creation; future route renders unavailable page.
+5. API load failure/Refresh recovery and 390px mobile layout without horizontal overflow.
+
+`npm run lint`, `npm run build` (TypeScript + Vite, 74 modules), and `npm run format:check` all exited 0 after final frontend changes. Installed development dependency audit still reports the same 13 moderate toolchain findings; no force upgrades or unrelated dependency fixes were performed.
+
+The user independently tested the actual app at http://127.0.0.1:5173/login using their real account and replied ?All checks passed? for instructor login/email display, dashboard refresh persistence, logout, and signed-out /dashboard redirection. This validates live authentication and empty-dashboard behavior. Survey-card actions are browser-tested against mocks; their backend endpoints were already verified in Phase 2. No extra hosted mutation test was needed for this frontend pass.
+
+### Issues found and corrected
+
+- Windows Set-Content introduced a BOM in the ignored .env.local. Vite could read the key but not the first URL variable, causing the setup-required screen in both the first UI run and the user's first attempt. Rewrote the file as UTF-8 without BOM and confirmed loadEnv reads the URL. User then confirmed all real-login checks passed. Mock UI tests now provide explicit dummy env values and do not depend on private/local configuration.
+- A test locator ambiguously matched success and loading status announcements together. Scoped it to the specific success message. A synthetic HTTP 503 activated SDK retries and exceeded the short alert assertion window; changed the focused UI-error fixture to a nonretrying HTTP 400. These were harness issues, not reasons to alter application behavior.
+- Prevented the initial empty-state message from appearing alongside a failed load and ensured card titles can shrink/wrap on narrow screens.
+
+### Progress and remaining work
+
+Checked all Phase 3 tasks and nine independent Phase 4 tasks only after the checks above. Five dependent Phase 4 tasks remain open. Real student pages, QR/presentation, survey editor, copying, results/CSV UI, deployment and performance requirements are unchanged later work. Browser tests use synthetic sessions; the user's manual confirmation supplies actual password-auth evidence. No claim of full mobile/accessibility audit or classroom load testing is made.
+
+Local dev server remains available at http://127.0.0.1:5173/ for the user. No commits or pushes were made. Future checks should remain limited to assignment requirements and affected features, as requested.
+
+## 2026-11-02 ? Phases 3-4 publication authorized
+
+User authorized committing/pushing the verified login and independent dashboard work, excluding local credentials and temporary files. This supersedes the previous publication hold for these changes. Publication review checks staged paths, secret patterns, whitespace, and repository state; prior passing focused browser/build/lint/format and user login checks remain the evidence. No completed test suite or hosted database operation is repeated. Dependent later-phase controls remain disabled and their tasks unchecked.

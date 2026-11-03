@@ -1,0 +1,27 @@
+{
+  "local_date": "2026-11-02",
+  "scope": "Phases 3 and independent Phase 4 features",
+  "browser_tests_passed": 5,
+  "mocked_supabase": true,
+  "hosted_test_data_created": false,
+  "manual_user_confirmation": {
+    "real_login": true,
+    "instructor_email_visible": true,
+    "refresh_restores_session": true,
+    "logout": true,
+    "signed_out_dashboard_redirect": true
+  },
+  "checks": {
+    "lint": "passed",
+    "production_build": "passed",
+    "format_check": "passed"
+  },
+  "deferred": [
+    "New Survey/editor",
+    "Edit",
+    "Activate/presentation",
+    "Duplicate",
+    "View Results"
+  ],
+  "committed": false
+}

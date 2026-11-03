@@ -1,10 +1,45 @@
-import { Route, Routes } from 'react-router-dom'
+import { Link, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
+import LoginPage from './pages/LoginPage'
+import DashboardPage from './pages/DashboardPage'
+import AuthProvider from './components/AuthProvider'
+import ProtectedRoute from './components/ProtectedRoute'
+import { supabase } from './lib/supabase'
 
 export default function App() {
+  if (!supabase)
+    return (
+      <main className="page">
+        <h1 className="text-2xl font-bold">Connection setup required</h1>
+        <p className="mt-4">
+          Configure the Supabase project URL and publishable key, then restart
+          the app. See README for setup instructions.
+        </p>
+      </main>
+    )
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+        </Route>
+        <Route
+          path="*"
+          element={
+            <main className="page">
+              <h1 className="text-2xl font-bold">Page unavailable</h1>
+              <p className="my-4">
+                This page does not exist or is not available yet.
+              </p>
+              <Link className="button" to="/">
+                Back to home
+              </Link>
+            </main>
+          }
+        />
+      </Routes>
+    </AuthProvider>
   )
 }

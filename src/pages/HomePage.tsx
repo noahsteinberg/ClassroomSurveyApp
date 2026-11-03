@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 export default function HomePage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6 py-16 text-slate-900">
@@ -11,9 +12,9 @@ export default function HomePage() {
         <p className="mt-4 text-lg text-slate-600">
           Quick in-class understanding checks.
         </p>
-        <p className="mt-6 text-sm text-slate-600">
-          Instructor login and survey tools are coming next.
-        </p>
+        <Link to="/login" className="button primary mt-7">
+          Instructor Login
+        </Link>
       </section>
     </main>
   )

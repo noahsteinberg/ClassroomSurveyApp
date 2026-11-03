@@ -16,3 +16,7 @@ Thumbs.db
 # Supabase CLI cache and local runtime state
 supabase/.temp/
 supabase/.branches/
+
+# Local browser test artifacts may contain session data
+playwright-report/
+test-results/

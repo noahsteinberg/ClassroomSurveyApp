@@ -2,7 +2,7 @@
 
 ## Tracking rules
 
-All inherited completion marks were reset on 2026-11-02 because this folder contains only the supplied documents. Check a task only after verifying its acceptance criteria and recording the command, observation, or evidence in `development-notes.md`. Generated code or a successful build alone does not prove a feature works. Existing phases remain the implementation roadmap; Phase 16 is optional and outside assignment completion. Phase 1 setup and local Git initialization/remote connection were authorized on 2026-11-02. The user subsequently authorized dependency review and committing/pushing the verified Phase 1 setup. Phase 2 preparation and application of the two reviewed migrations to the verified Supabase project were authorized. Hosted schema/permission checks are recorded below; committing/pushing this work, later frontend features, and deployment remain on hold.
+All inherited completion marks were reset on 2026-11-02 because this folder contains only the supplied documents. Check a task only after verifying its acceptance criteria and recording the command, observation, or evidence in `development-notes.md`. Generated code or a successful build alone does not prove a feature works. Existing phases remain the implementation roadmap; Phase 16 is optional and outside assignment completion. Phase 1 setup and local Git initialization/remote connection were authorized on 2026-11-02. The user subsequently authorized dependency review and committing/pushing the verified Phase 1 setup. Phase 2 preparation and application of the two reviewed migrations to the verified Supabase project were authorized. Hosted schema/permission checks are recorded below; Phases 3 and 4 frontend work were subsequently authorized with later features unavailable. Committing/pushing the current frontend work, later feature implementation, and deployment remain on hold.
 
 ## Purpose
 
@@ -48,32 +48,32 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 3 — Instructor Authentication
 
-- [ ] Create the instructor login page.
-- [ ] Connect login to Supabase Auth.
-- [ ] Add logout.
-- [ ] Create an authentication context/provider.
-- [ ] Create a protected-route component.
-- [ ] Redirect unauthenticated users to login.
-- [ ] Show the logged-in instructor in the dashboard.
+- [x] Create the instructor login page.
+- [x] Connect login to Supabase Auth.
+- [x] Add logout.
+- [x] Create an authentication context/provider.
+- [x] Create a protected-route component.
+- [x] Redirect unauthenticated users to login.
+- [x] Show the logged-in instructor in the dashboard.
 
 ---
 
 # Phase 4 — Instructor Dashboard
 
-- [ ] Create the dashboard layout.
-- [ ] Load surveys from Supabase.
-- [ ] Display survey title, status, and creation date.
-- [ ] Add status badges for Draft, Active, Closed, and Archived.
+- [x] Create the dashboard layout.
+- [x] Load surveys from Supabase.
+- [x] Display survey title, status, and creation date.
+- [x] Add status badges for Draft, Active, Closed, and Archived.
 - [ ] Add a New Survey button.
 - [ ] Add Edit action.
 - [ ] Add Duplicate action.
-- [ ] Add Delete action.
-- [ ] Add Archive action.
+- [x] Add Delete action.
+- [x] Add Archive action.
 - [ ] Add View Results action.
 - [ ] Add Activate action.
-- [ ] Add Close action.
-- [ ] Add search by survey title.
-- [ ] Add filtering by status.
+- [x] Add Close action.
+- [x] Add search by survey title.
+- [x] Add filtering by status.
 
 ---
 
@@ -353,3 +353,14 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Review final advisor findings and document recommended actions without changing hosted schema or settings.
 - [ ] Optional separate hardening migration: revoke browser EXECUTE grants on the pre-existing rls_auto_enable event-trigger function and verify the event trigger still works.
 - [ ] Enable leaked-password protection if already on a qualifying plan; otherwise document the free-plan limitation and use a strong unique password. No paid upgrade without user direction.
+
+
+# Phases 3-4 verification and later dependencies - November 2, 2026
+
+- [x] Pass focused browser tests for protected access, incorrect login, session restoration/logout, list/search/status filters, confirmation cancel/close/archive/delete, empty/error/retry states, disabled future controls, and a 390px mobile layout.
+- [x] User verifies actual instructor login, displayed email, refresh persistence, logout, and protected dashboard redirect against the hosted project.
+- [x] Pass lint, TypeScript/production build, and formatting checks for the affected frontend and tests.
+- [ ] Enable New Survey and draft Edit after the Phase 5 editor exists; current controls are explicitly unavailable.
+- [ ] Enable Activate with Phase 6 activation/presentation flow; current control is explicitly unavailable despite the existing database RPC.
+- [ ] Enable View Results after Phase 9 results page exists.
+- [ ] Enable Duplicate after Phase 12 copying flow and the editor exist.
