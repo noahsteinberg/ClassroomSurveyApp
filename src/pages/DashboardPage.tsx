@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
 import ConfirmAction from '../components/ConfirmAction'
+import ActivateSurvey from '../components/ActivateSurvey'
 import type { SurveyAction } from '../components/ConfirmAction'
 
 type Status = 'draft' | 'active' | 'closed' | 'archived'
@@ -157,8 +158,8 @@ export default function DashboardPage() {
           </div>
         </div>
         <p id="upcoming" className="mt-3 text-sm text-slate-600">
-          Coming next: duplication, activation, and results. These controls are
-          currently unavailable.
+          Coming next: duplication and results. These controls are currently
+          unavailable.
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_200px]">
           <div>
@@ -260,13 +261,11 @@ export default function DashboardPage() {
                       >
                         Edit
                       </Link>
-                      <button
-                        className="button"
-                        disabled
-                        aria-describedby="upcoming"
-                      >
-                        Activate
-                      </button>
+                      <ActivateSurvey
+                        id={survey.id}
+                        title={survey.title}
+                        disabled={busy || loading || logoutBusy}
+                      />
                     </>
                   )}
                   <button
@@ -283,6 +282,14 @@ export default function DashboardPage() {
                   >
                     View Results
                   </button>
+                  {survey.status === 'active' && (
+                    <Link
+                      className="button"
+                      to={`/surveys/${survey.id}/present`}
+                    >
+                      Present QR
+                    </Link>
+                  )}
                   {survey.status === 'active' && (
                     <button
                       className="button"

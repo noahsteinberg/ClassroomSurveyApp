@@ -11,6 +11,7 @@ import { supabase } from '../lib/supabase'
 import { blankDraft, draftErrors, moveItem, newChoices } from '../lib/draft'
 import type { Draft, DraftQuestion } from '../lib/draft'
 import EditorDialog from '../components/EditorDialog'
+import ActivateSurvey from '../components/ActivateSurvey'
 
 export default function SurveyEditorPage() {
   const { id } = useParams()
@@ -540,20 +541,18 @@ export default function SurveyEditorPage() {
             <button className="button primary" type="submit">
               {busy ? 'Saving…' : 'Save Draft'}
             </button>
-            <button
-              className="button"
-              type="button"
-              disabled
-              aria-describedby="activation-later"
-            >
-              Activate
-            </button>
+            <ActivateSurvey
+              id={draft.id}
+              title={draft.title}
+              disabled={!id || dirty || busy}
+            />
             <span className="text-sm text-slate-600">
               {dirty ? 'Unsaved changes' : 'No unsaved changes'}
             </span>
           </div>
           <p id="activation-later" className="text-sm text-slate-600">
-            Activation and QR presentation are coming next.
+            Save the draft before activating. Activation requires complete
+            questions and choices.
           </p>
         </fieldset>
       </form>

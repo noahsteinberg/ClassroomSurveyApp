@@ -2,8 +2,8 @@
 
 React + TypeScript + Vite project for the CSE 4095 classroom survey assignment.
 Instructor login and the dashboard are implemented. Survey creation/editing is implemented with atomic draft saving.
-Activation/presentation, duplication, results/CSV, student pages, and deployment
-remain pending; their dashboard controls are explicitly unavailable.
+Activation, QR presentation, anonymous student submissions, and duplicate protection
+are implemented. Duplication, results/CSV, and deployment remain pending.
 
 ## Local setup
 
@@ -61,7 +61,7 @@ Dashboard surveys load newest first. Search by title and filter by status.
 Close is available for active surveys; Archive for closed surveys; Delete for
 nonactive surveys. Every action has confirmation; Delete warns that all responses
 will be permanently removed. Closing never makes collected content editable.
-New Survey and draft-only Edit are available. Activate, Duplicate, and View Results
+New Survey, draft-only Edit, and Activate are available. Duplicate and View Results
 remain disabled until their later-phase workflows exist. There are no fake navigation links for those controls.
 
 Focused checks:
@@ -104,7 +104,7 @@ All draft content edits update the survey version, including direct child-table 
 A title and nonblank text for every entered question/choice are required. Incomplete
 counts are allowed: drafts may have zero questions or MC options fewer than two.
 Fill in or delete blank rows before saving. Activation will enforce complete survey
-structure later. Activate stays unavailable. Active/closed/archived editor URLs are
+structure before activation. Save first to enable Activate. Active/closed/archived editor URLs are
 blocked, and the save RPC independently rejects non-drafts.
 
 Focused checks: `npm run test:draft-db` uses disposable local PostgreSQL and only
@@ -112,3 +112,43 @@ tests draft saving/ordering/conflicts/rollback/retries; `npm run test:ui` includ
 four editor tests and affected dashboard/auth tests with mocked Supabase APIs.
 Neither command changes hosted data. The applied draft-saving migration is
 `supabase/migrations/20261103005809_save_draft.sql`.
+
+
+## Activation, presentation and student surveys (Phases 6-8)
+
+Activate a complete saved draft from the dashboard or editor. Unsaved editor changes
+must be saved first. Confirming activation closes the prior active survey atomically;
+server validation rejects incomplete surveys with a friendly message. Activation
+opens protected `/surveys/:id/present`; active dashboard cards also offer Present QR.
+The presentation shows title, large QR code, readable/copyable URL, downloadable PNG,
+response count, and confirmed Close Survey. Count polling is every five seconds while
+visible, stops on closed surveys, and is cleaned up on navigation. Results remains
+unavailable. Count queries are instructor-only and request counts rather than answers.
+
+Public `/s/:slug` needs no login. It uses a separate nonpersistent Supabase client so
+a student preview never inherits a signed-in instructor's database permissions.
+Questions/choices load in saved order and use labeled mobile radio controls. Every
+question requires an answer. Submit calls only submit_survey_response; success is
+shown after the RPC confirms, and network failure preserves selected answers.
+Closed, missing, already-submitted, loading and retry states have friendly messages.
+
+Each survey gets a random browser UUID token stored in localStorage. A per-survey
+success marker handles refresh/revisits; database survey/token uniqueness is the
+source of truth. Retries reuse the token, including after an uncertain response.
+The token is reread before submitting to reduce accidental multi-tab token races.
+Blocked/corrupt storage prevents submission and explains how to enable storage and
+reload. Clearing storage, using another browser/profile, or closing an incognito
+session can bypass accidental-duplicate protection; this is not student identity
+verification or attendance tracking. No student Auth accounts are created.
+
+Desktop manual workflow: create a complete fresh draft, Save Draft, Activate, open
+the presentation URL in an incognito window, submit, refresh for Already submitted,
+return to verify the increased count, download the QR PNG, close, and reload the
+student URL to see Survey closed. Use the same origin for duplicate tests.
+The localhost URL works only on this computer; actual phone QR scanning needs a
+reachable HTTPS site (normally the later deployment). A local-link notice is shown
+on the projection page. Do not claim device/production verification until performed.
+
+Focused browser tests are in `tests/ui/student-presentation.spec.ts`. They mock APIs
+and create no hosted data; prior Phase 2 database transaction/permission tests remain
+applicable because no database migration or backend function changed in this pass.

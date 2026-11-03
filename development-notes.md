@@ -369,3 +369,51 @@ User subsequently replied ?All editor checks passed? to the guided real-browser 
 ## 2026-11-02 ? Phase 5 publication authorized
 
 User authorized committing/pushing verified Phase 5 work, excluding credentials and temporary files. This supersedes the earlier publication hold for the editor, applied migration, focused tests, evidence, and notes. Publication review is limited to staged-file/secret-pattern/whitespace checks and repository state; no completed tests or hosted operations are repeated.
+
+## 2026-11-02 ? Phases 6-8 activation, QR presentation and public submissions
+
+### Scope and implementation
+
+User authorized implementation according to the reviewed plan, focused checks, real workflow guidance, and TODO/notes updates; no commit or push. Reused the already applied/verified activation, close, availability, and transactional submission RPCs and uniqueness constraints. No schema/function/permission/Auth-setting changes or new migrations were needed. No agent-created hosted test fixtures or backend test-suite reruns in this pass.
+
+- Added reusable ActivateSurvey confirmation/action with friendly validation errors. Activation on dashboard is enabled for drafts, closes any previous active survey via the existing atomic RPC, and navigates to protected /surveys/:id/present. The confirmation explains automatic closing and immutable collected content. Editor activation requires a saved clean draft; unsaved changes must be saved first. Invalid/incomplete drafts stay put with actionable feedback.
+- Presentation shows the title, large 640px PNG QR rendered responsively, readable/clickable public URL, Copy URL, downloadable PNG, response count, confirmed Close Survey and dashboard return. Current window origin forms the public URL, so a deployed site's QR uses that site's origin. A localhost notice explains the phone limitation. View Results remains disabled.
+- Presentation reads instructor-authorized survey metadata plus HEAD/exact-count responses; it does not fetch student answer rows. It polls every five seconds while visible, avoids overlapping polls, refreshes on visibility/manual refresh, cancels requests/timers on unmount, and stops active polling once closed. Close removes QR and shows a no-longer-accepting message. Poll/copy/QR/close failures have helpful messages.
+- Public /s/:slug is enabled with no login, navigation menu or instructor controls. It loads active survey/question/choice data and sorts saved positions. The separate publicSupabase client uses a unique storage key, persistSession=false, autoRefreshToken=false and detectSessionInUrl=false; it never inherits an instructor's stored session, even when previewed in the same browser. The instructor client and backend authorization are unchanged.
+- Public UI renders MC/TF as labeled radio groups with large touch targets, required-answer validation per question, disabled in-flight controls, and friendly loading/error/retry, missing, closed, success and duplicate states. It calls submit_survey_response only. Success follows server confirmation; network/uncertain failures retain selections and allow retry, and raw database exceptions never appear to students. Closing after the form loads is enforced by RPC on submission.
+- Random UUID token is persisted per survey in localStorage, with a separate per-survey successful-submission marker. Marker is written only after confirmed success/server duplicate; token/database uniqueness remain authoritative if marker writes fail. Before each submission, reread marker/token to reduce accidental cross-tab initial-token races. A synchronous pending ref prevents UI double submits. Blocked/corrupt storage prevents submission rather than silently losing duplicate protection. Clearing storage/changing browser/profile/incognito session bypasses this accidental-repeat protection by design; no student identity/account is claimed.
+- Duplicate and View Results remain clearly unavailable. Presentation/student routes follow the agreed /s/:slug naming; updated the original TODO's :surveyId parameter wording with the approved naming clarification.
+
+### Focused checks
+
+Added seven browser scenarios in tests/ui/student-presentation.spec.ts using mocked Supabase requests and no real credentials. Updated dashboard tests only for the now-enabled Activate control. Editor's dirty-draft Activate remains disabled as expected. Initial affected-suite run: 14 passed and two fixture failures; corrected only those fixtures, then reran those two and both passed. In total **all 16 affected scenarios passed**, including nine existing auth/dashboard/editor scenarios and these seven new ones:
+
+1. Activation confirmation/handoff, correct public URL, generated QR image, downloaded PNG filename, foreground count polling, confirmed closing and QR removal.
+2. Friendly incomplete-draft validation without navigation.
+3. Anonymous 390px mobile required-answer flow, ordered answer payload, successful submission, persistent UUID, and refresh showing Already submitted without another request.
+4. Uncertain accepted response preserves selections; a retry uses the same token and server duplicate handling shows Already submitted.
+5. Close-before-submit rejection, closed-link reload and missing-link state.
+6. Public read error retry and blocked-storage denial of Submit.
+7. Protected presentation route plus anonymous student submission while the same browser has an instructor session. Assertions confirm no instructor token on student submission.
+
+Fixture corrections: mocked HEAD count responses needed Access-Control-Expose-Headers for content-range to model Supabase's real CORS response; without it the SDK could not read the synthetic count. The storage/error test attempted a retry button after reload had already recovered the page; changed the test to retry first, then block storage/reload. Neither issue required changing production behavior.
+
+Final npm run lint, npm run build (TypeScript + Vite, 110 modules), and npm run format:check passed. The existing nonfatal large-chunk advisory remains (~589 kB minified/~173 kB gzip); production load-target measurement is still later assignment work, not inferred from build time. No unrelated performance tuning or repeated Phase 2/5 database suites were run.
+
+Prior Phase 2 actual hosted tests already established the single-active invariant, automatic handoff, submission validation/atomic storage, and unique survey/token behavior. This pass wires those interfaces to the product UI; no backend rewrite was introduced. Evidence summary: tests/ui/phases6-8-verification.json.
+
+### Manual workflow and outstanding device check
+
+Guided the user at http://127.0.0.1:5173/dashboard to create a complete ?Phase 6?8 check? draft, save, activate, open the public link in an incognito window without login, submit, refresh for Already submitted, return for the increased count, download PNG, close, and reload the student link for closed state. User confirmation is currently pending and is separately unchecked; no manual pass is invented. Any user-created test survey/responses are theirs to retain/delete; the agent did not delete or alter their existing surveys outside normal UI instructions.
+
+Actual phone QR scanning is **not verified**: localhost on a phone targets the phone, not this computer. It requires a reachable HTTPS deployment/shared address and remains an explicit later device/deployment test. This is a test-environment dependency, not a claim of broken QR generation. The 200-student load requirement, results/charts/CSV, duplication, deployment and submission evidence remain later work.
+
+Checked implemented Phase 6/7/8 tasks using the focused UI checks plus existing backend evidence, enabled Phase 4 Activate, and left live manual confirmation/device verification separate. No commits or pushes were made. Keep further checks focused on assignment requirements and affected features.
+
+User reported question headings straddling the student-card top borders on the laptop. Moved panel styling from the semantic fieldset to an outer wrapper, keeping accessible legends inside with aligned padding and spacing. The focused mobile required-answer/submission/duplicate browser scenario passed after this layout-only fix (1 test, 5.7 seconds). Live manual workflow remains pending; no broader suites rerun or commit/push made.
+
+User subsequently confirmed ?Layout and workflow passed? for corrected student-card headings and the guided live desktop activation, anonymous submission, duplicate refresh, presentation count, QR download, close and closed-link checks. Checked the live desktop task and updated its evidence report. This supersedes the earlier pending-manual statements. Actual phone QR scanning remains unchecked until a reachable HTTPS URL is available. Phases 6-8 desktop verification is complete; testing stopped. No commit or push was made.
+
+## 2026-11-02 ? Phases 6-8 publication authorized
+
+User authorized committing/pushing the verified activation, QR presentation, public submission and duplicate-protection work. The laptop layout issue is recorded above: native fieldset legends overlapped card borders; moving the visual panel to an outer wrapper placed headings inside with consistent alignment while preserving semantic radio-group labels. The focused layout/submission check and user confirmation passed. Publication excludes local credentials and temporary artifacts. No completed tests or hosted operations are repeated. Phone QR scanning remains pending a reachable HTTPS URL.

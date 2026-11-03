@@ -42,7 +42,7 @@ test('survey list, search/status filters and unavailable later features', async 
   await expect(
     page.getByRole('link', { name: 'New Survey', exact: true }),
   ).toHaveAttribute('href', '/surveys/new')
-  for (const name of ['Activate', 'Duplicate', 'View Results'])
+  for (const name of ['Duplicate', 'View Results'])
     await expect(
       page.getByRole('button', { name, exact: true }).first(),
     ).toBeDisabled()

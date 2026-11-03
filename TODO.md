@@ -70,7 +70,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Add Delete action.
 - [x] Add Archive action.
 - [ ] Add View Results action.
-- [ ] Add Activate action.
+- [x] Add Activate action.
 - [x] Add Close action.
 - [x] Add search by survey title.
 - [x] Add filtering by status.
@@ -99,45 +99,45 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 6 — Survey Activation
 
-- [ ] Add activation logic.
-- [ ] Ensure at most one survey is Active.
-- [ ] Automatically close the previously active survey.
-- [ ] Generate a public survey slug or identifier.
-- [ ] Generate the public survey URL.
-- [ ] Generate a QR code from the public URL.
-- [ ] Create a Present Survey page.
-- [ ] Display survey title and QR code.
-- [ ] Display a readable fallback URL.
-- [ ] Add a Close Survey button.
-- [ ] Add a Download QR Code button.
+- [x] Add activation logic.
+- [x] Ensure at most one survey is Active.
+- [x] Automatically close the previously active survey.
+- [x] Generate a public survey slug or identifier.
+- [x] Generate the public survey URL.
+- [x] Generate a QR code from the public URL.
+- [x] Create a Present Survey page.
+- [x] Display survey title and QR code.
+- [x] Display a readable fallback URL.
+- [x] Add a Close Survey button.
+- [x] Add a Download QR Code button.
 
 ---
 
 # Phase 7 — Student Survey Page
 
-- [ ] Create the public route `/s/:surveyId`.
-- [ ] Load the requested active survey.
-- [ ] Show an error if the survey does not exist.
-- [ ] Show a message if the survey is closed.
-- [ ] Render survey title and description.
-- [ ] Render Multiple Choice questions.
-- [ ] Render True / False questions.
-- [ ] Validate required answers.
-- [ ] Add Submit button.
-- [ ] Store response and answers in Supabase.
-- [ ] Show a submission confirmation page.
-- [ ] Make the entire experience mobile friendly.
+- [x] Create the public route `/s/:slug` (approved slug naming replaces the original `:surveyId` parameter).
+- [x] Load the requested active survey.
+- [x] Show an error if the survey does not exist.
+- [x] Show a message if the survey is closed.
+- [x] Render survey title and description.
+- [x] Render Multiple Choice questions.
+- [x] Render True / False questions.
+- [x] Validate required answers.
+- [x] Add Submit button.
+- [x] Store response and answers in Supabase.
+- [x] Show a submission confirmation page.
+- [x] Make the entire experience mobile friendly.
 
 ---
 
 # Phase 8 — Duplicate Submission Protection
 
-- [ ] Generate an anonymous browser token.
-- [ ] Store the token in local storage.
-- [ ] Save the token with each response.
-- [ ] Prevent the same token from submitting twice to the same survey.
-- [ ] Show a friendly message if a duplicate submission is attempted.
-- [ ] Add a database uniqueness constraint if appropriate.
+- [x] Generate an anonymous browser token.
+- [x] Store the token in local storage.
+- [x] Save the token with each response.
+- [x] Prevent the same token from submitting twice to the same survey.
+- [x] Show a friendly message if a duplicate submission is attempted.
+- [x] Add a database uniqueness constraint if appropriate.
 
 ---
 
@@ -270,7 +270,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [ ] Provision instructor account privately and prevent public registration from granting instructor access.
 - [ ] Enforce agreed editing and state-transition rules at the database boundary; preserve historical question/choice meaning.
 - [ ] Define public slug resolution and safe closed/not-found responses without exposing inactive survey content or results.
-- [ ] Add visible presentation response count and refresh behavior; verify count updates after a student submits.
+- [x] Add visible presentation response count and refresh behavior; polling behavior verified in focused browser tests (live user workflow recorded separately).
 - [ ] Validate at least one question, nonblank title/question/choice text, at least two multiple-choice options, exactly True/False choices, stable ordering, and agreed required-answer rules.
 - [ ] Make duplication atomic or recover safely from failure; copy no responses or answers and issue a distinct public identifier.
 - [ ] Define result percentage denominator, rounding, zero-response behavior, and unanswered display.
@@ -361,7 +361,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] User verifies actual instructor login, displayed email, refresh persistence, logout, and protected dashboard redirect against the hosted project.
 - [x] Pass lint, TypeScript/production build, and formatting checks for the affected frontend and tests.
 - [x] Enable New Survey and draft Edit after the Phase 5 editor exists; verified in Phase 5.
-- [ ] Enable Activate with Phase 6 activation/presentation flow; current control is explicitly unavailable despite the existing database RPC.
+- [x] Enable Activate with Phase 6 activation/presentation flow; confirmed activation opens the protected QR presentation.
 - [ ] Enable View Results after Phase 9 results page exists.
 - [ ] Enable Duplicate after Phase 12 copying flow and the editor exist.
 
@@ -374,3 +374,11 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Pass nine affected browser tests, including four editor scenarios (ordering/reload, validation/TF/deletion, retry IDs, conflicts/navigation/non-draft rejection).
 - [x] Verify hosted save/retry/order/conflict/validation/receipt cleanup in a rolled-back synthetic transaction.
 - [x] User verifies editor create/edit/reorder/save/refresh/TF and unsaved-change warning in the real browser.
+
+
+# Phases 6-8 focused verification - November 2, 2026
+
+- [x] Pass seven new browser scenarios for activation/validation, QR URL/PNG/count/close, mobile public submissions, duplicate refresh/retry, closed/missing links, storage/error recovery, and instructor-session isolation.
+- [x] Recheck the nine affected dashboard/editor/auth scenarios after enabling activation and adding routes; all covered scenarios passed across focused runs.
+- [x] User verifies live activation, anonymous submission, count update, duplicate refresh, PNG download, and closure on the desktop.
+- [ ] Verify actual phone QR scanning and submission using a reachable HTTPS address during deployment/device testing; localhost QR cannot reach this computer from a phone.
