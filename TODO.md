@@ -204,20 +204,20 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 14 — Testing
 
-- [ ] Test instructor login.
-- [ ] Test survey creation.
-- [ ] Test survey editing.
-- [ ] Test activation.
-- [ ] Test closing surveys.
-- [ ] Test QR-code links.
-- [ ] Test student submissions.
-- [ ] Test duplicate-submission prevention.
-- [ ] Test results calculations.
-- [ ] Test CSV export.
-- [ ] Test mobile layout.
-- [ ] Test with at least two browsers.
-- [ ] Test unauthorized access attempts.
-- [ ] Test database Row Level Security.
+- [x] Test instructor login.
+- [x] Test survey creation.
+- [x] Test survey editing.
+- [x] Test activation.
+- [x] Test closing surveys.
+- [x] Test QR-code links on desktop (URL and downloaded PNG verified; actual phone scanning remains pending below).
+- [x] Test student submissions.
+- [x] Test duplicate-submission prevention.
+- [x] Test results calculations.
+- [x] Test CSV export.
+- [x] Test mobile layout.
+- [x] Test with at least two browsers.
+- [x] Test unauthorized access attempts.
+- [x] Test database Row Level Security.
 
 ---
 
@@ -277,22 +277,22 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Required additions to Phase 14 ? Verification
 
-- [ ] Record test environment, steps, expected/actual results, evidence, failures, and fixes in `development-notes.md`; rerun affected checks after fixes.
-- [ ] Run type checking, linting, automated tests, and production build; record exact commands and outcomes.
-- [ ] Verify complete create ? edit ? activate ? phone QR scan ? anonymous submit ? present count ? results ? CSV ? close workflow locally and publicly.
-- [ ] Inspect actual Supabase records for survey, ordered questions/choices, response, and answers; refresh/reopen the app to verify persistence.
-- [ ] Test anonymous direct API access: inactive content, responses, answers, results/export, survey mutations, and instructor RPCs must be inaccessible.
-- [ ] Test logout, expired sessions, protected-route reloads, incorrect credentials, and public signup restrictions.
-- [ ] Test malformed/empty submissions, missing/extra/duplicate questions, cross-survey questions, mismatched choices, invalid tokens, and inactive survey submissions; failures must leave no partial records.
-- [ ] Test duplicate submission after refresh, double-click, concurrent requests, and retry after an uncertain network response; verify exactly one stored response per survey/token.
-- [ ] Test simultaneous activations and close-versus-submit races; at most one survey remains active and no submission is accepted after closing completes.
-- [ ] Verify duplication, archive, delete/cascade, confirmation dialogs, date/title/status filtering, reordering, and historical result preservation.
-- [ ] Verify results against known seeded counts, zero responses, percentages and rounding, and the agreed unanswered behavior.
-- [ ] Test CSV metadata, timestamps, column ordering, Unicode, quotes, commas, newlines, empty results, and formula-like cells; open in a spreadsheet application.
-- [ ] Test loading, offline/network failures, retry behavior, missing/closed links, and friendly errors with no raw database exceptions.
-- [ ] Verify keyboard navigation, labels, focus, contrast, numeric chart alternatives, 44px student touch targets, mobile/tablet layouts, and projector readability.
-- [ ] Test actual phone QR scanning, downloaded QR PNG, fallback URL, and two browsers; record device/browser versions.
-- [ ] Define a reproducible page-load measurement and test the specified average under 2 seconds; record conditions and results.
+- [x] Record test environment, steps, expected/actual results, evidence, failures, and fixes in `development-notes.md`; rerun affected checks after fixes.
+- [x] Run type checking, linting, automated tests, and production build; record exact commands and outcomes.
+- [ ] Verify complete create ? edit ? activate ? phone QR scan ? anonymous submit ? present count ? results ? CSV ? close workflow locally and publicly. Desktop segments verified across prior phases; phone scan and public end-to-end run remain pending.
+- [x] Inspect actual Supabase records for survey, ordered questions/choices, response, and answers; refresh/reopen the app to verify persistence.
+- [x] Test anonymous direct API access: inactive content, responses, answers, results/export, survey mutations, and instructor RPCs must be inaccessible.
+- [x] Test logout, expired sessions, protected-route reloads, incorrect credentials, and public signup restrictions.
+- [x] Test malformed/empty submissions, missing/extra/duplicate questions, cross-survey questions, mismatched choices, invalid tokens, and inactive survey submissions; failures must leave no partial records.
+- [x] Test duplicate submission after refresh, double-click, concurrent requests, and retry after an uncertain network response; verify exactly one stored response per survey/token.
+- [x] Test simultaneous activations and close-versus-submit races; at most one survey remains active and no submission is accepted after closing completes.
+- [x] Verify duplication, archive, delete/cascade, confirmation dialogs, date/title/status filtering, reordering, and historical result preservation.
+- [x] Verify results against known seeded counts, zero responses, percentages and rounding, and the agreed unanswered behavior.
+- [x] Test CSV metadata, timestamps, column ordering, Unicode, quotes, commas, newlines, empty results, and formula-like cells; open in a spreadsheet application.
+- [x] Test loading, offline/network failures, retry behavior, missing/closed links, and friendly errors with no raw database exceptions.
+- [x] Verify keyboard navigation, labels, focus, contrast, numeric chart alternatives, 44px student touch targets, mobile/tablet layouts, and projector readability.
+- [ ] Test actual phone QR scanning, downloaded QR PNG, fallback URL, and two browsers; record device/browser versions. Desktop PNG/fallback URL and Chrome/Edge verified; phone scan remains pending.
+- [ ] Define a reproducible page-load measurement and test the specified average under 2 seconds; record conditions and results. Measurement protocol defined in development-notes.md; local/public timed measurements remain pending.
 - [ ] Test at least 200 simultaneous students using synthetic tokens in an isolated test dataset; verify latency, errors, exact stored counts, and resource limits. Document any unmet target honestly.
 
 # Required additions to Phase 15 ? Repository and deployment
@@ -407,3 +407,14 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Verify editor dialog description, keyboard cancellation and trigger-focus restoration; verify survey-action focus restoration.
 - [x] Verify narrow editor/student/results layouts and long text, classroom QR size and shared input boundary contrast.
 - [x] Pass affected editor/student/presentation/dashboard/results checks, build, lint and changed-file formatting.
+
+## Phase 14 evidence reconciliation (2026-11-03)
+
+- [x] Map completed functional/security/persistence checks to prior phase reports without rerunning covered suites.
+- [x] Verify expired access-token refresh success and revoked-refresh rejection on protected reloads.
+- [x] Verify rapid repeated Submit events issue one RPC while pending.
+- [x] Verify tablet portrait/landscape layouts and student controls at least 44px tall.
+- [x] Pass four missing Chrome scenarios and twelve targeted second-browser Edge scenarios; record browser versions.
+- [x] User verifies actual Edge instructor login, dashboard refresh, Closed-survey results, CSV download, logout and protected redirect.
+- [ ] Verify actual phone scan and full public deployment workflow after deployment.
+- [ ] Measure the under-two-second page-load target and 200-simultaneous-student capacity; functional mock tests are not performance evidence.

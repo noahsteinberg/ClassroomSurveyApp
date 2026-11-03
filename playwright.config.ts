@@ -7,7 +7,7 @@ export default defineConfig({
   reporter: 'list',
   use: {
     baseURL: 'http://127.0.0.1:5174',
-    channel: 'chrome',
+    channel: process.env.PLAYWRIGHT_CHANNEL ?? 'chrome',
     headless: true,
     screenshot: 'off',
     trace: 'off',

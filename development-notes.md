@@ -511,3 +511,56 @@ Evidence: tests/ui/phase13-verification.json. Checked Phase 13 tasks only after 
 ### Phase 13 publication
 
 User authorized committing and pushing the verified Phase 13 work. Publication includes usability/accessibility changes, affected tests, TODO, notes and the verification report. Explicitly excluded environment credentials, temporary browser/build artifacts and the four user screenshot files. Reviewed staged paths, whitespace and credential patterns; retained completed focused verification without repeating unrelated tests.
+
+
+## 2026-11-03 ? Phase 14 evidence reconciliation and missing local checks
+
+Reviewed the original Phase 14 list and its required verification additions against existing reports and user confirmations. Retained completed evidence rather than repeating databases, full browser suites or hosted fixtures. No production application code, schema, dependencies, Supabase settings or real survey data changed. Public deployment and physical phone QR checks explicitly remain pending.
+
+### Evidence reused
+
+| Requirement | Existing evidence accepted |
+| --- | --- |
+| Instructor login, incorrect credentials, reload persistence, logout/protected routes | tests/ui/verification.json, dashboard.spec.ts, actual Phase 3-4 user confirmation |
+| Create/edit/save/reorder/persistence and draft conflict/rollback/retry | supabase/verification/2026-11-02-phase5-draft-save.json (25 local assertions, concurrency and hosted transaction), editor.spec.ts and user confirmation |
+| Activation/closure, QR URL/PNG/count, anonymous submission, duplicate refresh/retry, missing/closed/error/storage states | tests/ui/phases6-8-verification.json, student-presentation.spec.ts and actual desktop user confirmation |
+| Known/zero/rounded/unanswered results, history, CSV escaping/metadata/formula cells/download, spreadsheet open and active refresh | tests/ui/phases9-11-verification.json, results.spec.ts and user confirmations |
+| Duplication/source preservation/zero-copy-responses | tests/ui/phase12-verification.json and actual user confirmation |
+| Keyboard/labels/focus/contrast/table alternatives, narrow layouts, confirmations and projection-size QR | tests/ui/phase13-verification.json and accessibility.spec.ts |
+| RLS/grants/instructor guards, signup restrictions, inactive/results denial, malformed membership/token validation, no partial writes, concurrent duplicate/activation/close/edit and cascade/archive preservation | supabase/verification/2026-11-02-hosted-audit.json, 2026-11-02-hosted-api-tests.json (47 actual API checks with cleanup), security.sql and prior 73-assertion/five-concurrency local run documented above |
+
+Historical reports describe their state at their original phase; later reports supersede their old deferred-feature labels. No old evidence files were rewritten to imply new runs.
+
+### Missing checks run now
+
+Environment: Windows laptop; installed Google Chrome 156.0.8078.80 and Microsoft Edge 156.0.4314.50, controlled headlessly by the installed Playwright. Browser tests use the isolated local Vite test server at 127.0.0.1:5174 and synthetic Supabase HTTP fixtures, never actual credentials or hosted mutations. Real manual Edge check used the configured app at 127.0.0.1:5173 against the existing Supabase project.
+
+Added tests/ui/phase14.spec.ts with four scenarios. Expected and actual results match: an expired token with a valid refresh restores dashboard access; a rejected/revoked refresh returns to login and keeps results inaccessible; two synchronous Submit events while the RPC response is held issue exactly one request and complete once; tablet dashboard/editor layouts fit 768x1024 and 1024x768, and student layout at 768x1024 fits with label targets at least 44px tall. The rapid-submit fixture verifies the frontend guard; durable uniqueness is established by existing hosted/database concurrency evidence, not inferred from a mocked success.
+
+Changed playwright.config.ts only to accept PLAYWRIGHT_CHANNEL while retaining Chrome as the default. This makes Edge runs reproducible without duplicating configuration.
+
+Commands and outcomes:
+
+- `npx playwright test tests/ui/phase14.spec.ts --workers=2`: 4 passed in Chrome (7.2 seconds).
+- PowerShell `$env:PLAYWRIGHT_CHANNEL='msedge'`, then `npx playwright test tests/ui/phase14.spec.ts tests/ui/dashboard.spec.ts tests/ui/editor.spec.ts tests/ui/student-presentation.spec.ts tests/ui/results.spec.ts tests/ui/duplication.spec.ts tests/ui/accessibility.spec.ts -g 'expired session|rapid repeated|tablet dashboard|protected route, invalid|create, reorder|activation confirms|anonymous mobile|known counts|CSV download|duplication: copy|navigation heading' --workers=2`: 12 passed in Edge (26.4 seconds). Covers the missing checks plus representative login/editor/activation/count/PNG/closure/student/duplicate/results/CSV/copy/keyboard behavior in the second browser.
+- `npx eslint playwright.config.ts tests/ui/phase14.spec.ts`: passed.
+- `npx prettier --check playwright.config.ts tests/ui/phase14.spec.ts`: passed. Verification-report formatting checked after writing it.
+- `git diff --check`: passed. Existing TypeScript/full lint/production build results from Phase 13 remain applicable because runtime source and dependencies are unchanged; these completed checks were not repeated.
+
+No new test failures or fixes to production features were required. User replied ?All Edge checks passed? after privately signing in, refreshing the dashboard, opening existing Closed-survey results, downloading CSV, logging out and revisiting /dashboard. No new activation or survey was needed. This supplies actual hosted integration confirmation in the second browser alongside the mocked automation.
+
+### Deferred acceptance checks and reproducible performance protocol
+
+There are no newly observed functional blockers. Phase 14 functional/security checks are verified, but the expanded phase is not fully complete: physical phone scanning, the complete public workflow, measured load time and 200-student capacity remain unchecked. Do not infer capacity or latency from unit tests, the 1,205-response pagination fixture, two-request concurrency tests or successful builds. No hosted load traffic was sent in this pass.
+
+Page-load protocol for the later measurement: serve a production build, record machine/browser version, origin, network/device profile, dataset and cache conditions. Measure navigation start to the page's usable state (student questions/choices enabled; dashboard surveys rendered; results table/data rendered), not merely HTTP 200 or load-event time. Run ten separate cold-browser-context navigations per representative page and ten warm navigations separately. Report each sample, mean and p95; compare each cold-page mean with the specified <2-second target. Repeat against public HTTPS under a recorded classroom-representative network profile; report local and public outcomes separately. These timed measurements have not yet been run.
+
+Capacity protocol for the later authorized isolated dataset: use a dedicated test survey/project, two complete questions and 200 distinct synthetic browser tokens; establish a barrier before releasing 200 simultaneous submission clients through the real public API. Record client start/completion timing, HTTP/application errors, mean/p95 latency, observed resource/rate limits, and instructor-side exact counts of 200 responses/400 answers with no partial or duplicate records. Do not disturb an existing active class survey; remove only test-owned fixtures afterward and verify cleanup. A local PostgreSQL-only load would not prove Supabase/network/browser end-to-end capacity, so it is not substituted for the unverified target.
+
+Later manual guide after public deployment: scan the active survey with a physical phone, submit anonymously, refresh for Already submitted, confirm the instructor count/results/CSV, then close and reload the phone link. Record phone OS/browser versions and repeat the scan using the downloaded PNG or verify its identical destination. Keep production login/deep links and full public persistence/authorization checks in Phase 15.
+
+Updated TODO checkmarks only for substantiated evidence, with desktop QR success separated from the pending phone scan. Evidence: tests/ui/phase14-verification.json. No commit or push performed; existing screenshot files and local environment credentials remain untouched.
+
+### Phase 14 publication
+
+User authorized committing and pushing the verified Phase 14 tests and evidence reconciliation. Publication includes the browser-channel configuration, new missing-check tests, verification report, TODO and notes. Phone/public workflow and performance targets remain pending; publication does not claim those checks passed. Excluded credentials, temporary artifacts and the four user screenshot files. Reviewed staged paths, credential patterns and whitespace without repeating completed tests.

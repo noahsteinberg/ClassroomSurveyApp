@@ -1,0 +1,50 @@
+{
+  "phase": 14,
+  "date": "2026-11-03",
+  "status": "Functional checks verified; device/deployment/performance acceptance remains pending",
+  "new_checks": {
+    "chrome": {
+      "version": "156.0.8078.80",
+      "passed": 4,
+      "seconds": 7.2
+    },
+    "edge": {
+      "version": "156.0.4314.50",
+      "passed": 12,
+      "seconds": 26.4
+    },
+    "mocked_supabase": true,
+    "coverage": [
+      "Expired session refresh success",
+      "Revoked refresh denied on protected reload",
+      "Rapid repeated submits send one RPC",
+      "Tablet layouts and 44px student labels",
+      "Representative second-browser feature checks"
+    ]
+  },
+  "manual_edge": "User confirmed all checks passed: real login, dashboard refresh, Closed results, CSV download, logout and protected redirect",
+  "reused_evidence": [
+    "tests/ui/verification.json",
+    "supabase/verification/2026-11-02-hosted-audit.json",
+    "supabase/verification/2026-11-02-hosted-api-tests.json",
+    "supabase/verification/2026-11-02-phase5-draft-save.json",
+    "tests/ui/phases6-8-verification.json",
+    "tests/ui/phases9-11-verification.json",
+    "tests/ui/phase12-verification.json",
+    "tests/ui/phase13-verification.json"
+  ],
+  "affected_lint": "passed",
+  "affected_formatting": "passed",
+  "build_and_typecheck": "Reused successful Phase 13 results; no runtime/dependency changes",
+  "failures": [],
+  "pending": [
+    "Physical phone QR scanning",
+    "Complete public deployment workflow",
+    "Measured <2s average usable-page load",
+    "200 simultaneous students through real API on isolated dataset"
+  ],
+  "performance_protocol": "Defined in development-notes.md; no timing or capacity claim",
+  "hosted_data_mutations": false,
+  "application_changes": false,
+  "publication": "User authorized commit and push of verified checks; pending device/deployment/performance targets remain documented."
+}
