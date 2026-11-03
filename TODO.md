@@ -298,7 +298,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 # Required additions to Phase 15 ? Repository and deployment
 
 - [x] Initialize/connect local Git to https://github.com/noahsteinberg/ClassroomSurveyApp.git after authorization; inspect remote before integrating any contents.
-- [ ] Add README with architecture/data flow, prerequisites, local setup, environment variable names, schema/RLS/RPC setup, instructor provisioning, tests, deployment, and SPA routing.
+- [x] Add README with architecture/data flow, prerequisites, local setup, environment variable names, schema/RLS/RPC setup, instructor provisioning, tests, deployment, and SPA routing.
 - [ ] Add `.gitignore` and safe `.env.example`; inspect staged files and history for passwords, private keys, service-role keys, and real student data before publishing.
 - [ ] Verify clean checkout/install/build and fresh schema setup using the README.
 - [ ] Verify deployed deep links and reloads, HTTPS, Supabase production auth configuration, QR origin, persistence, duplicate protection, and anonymous/instructor authorization from outside the local network.
@@ -418,3 +418,13 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] User verifies actual Edge instructor login, dashboard refresh, Closed-survey results, CSV download, logout and protected redirect.
 - [ ] Verify actual phone scan and full public deployment workflow after deployment.
 - [ ] Measure the under-two-second page-load target and 200-simultaneous-student capacity; functional mock tests are not performance evidence.
+
+## Phase 15 preparation (2026-11-03; not deployed)
+
+- [x] Refresh README for completed features, architecture, all three migrations, private instructor setup, test commands and Pages settings.
+- [x] Pin deployment Node 22.23.4 in .node-version and verify package engine compatibility.
+- [x] Install from the unchanged lockfile in a clean tracked-source snapshot with fresh Linux dependencies; pass TypeScript and production build under Node 22.23.4/npm 10.9.9.
+- [x] Smoke-test emitted production assets, ten local direct routes/redirects, public form/closed state, 320px layout and focus styling without hosted mutations.
+- [x] Verify repository-root/main/build/dist settings, safe environment variable names, README local links, ignored credentials/artifacts and absence of a top-level 404 override.
+- [ ] Create/connect the actual Cloudflare Pages project, enter production build settings/variables and deploy after authorization.
+- [ ] Verify the published repository from a fresh clone after publication, then actual Cloudflare/public/phone/performance acceptance checks.

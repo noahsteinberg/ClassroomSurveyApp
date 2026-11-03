@@ -1,0 +1,53 @@
+{
+  "phase": 15,
+  "date": "2026-11-03",
+  "status": "Prepared locally; not deployed",
+  "source": "Clean tracked-working-source snapshot plus new .node-version; excludes local env/dependencies/dist/screenshots",
+  "node": "22.23.4",
+  "npm": "10.9.9",
+  "image": "node:22.23.4-bookworm-slim",
+  "image_digest": "sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da",
+  "clean_checks": {
+    "npm_ci": "passed; 262 packages installed",
+    "typecheck_and_production_build": "passed; 695 modules",
+    "manifest_and_lockfile_unchanged": true,
+    "configuration_private_credential_pattern_scan": "passed",
+    "local_production_smoke": {
+      "routes_passed": 10,
+      "assets": "JS/CSS HTTP 200",
+      "uncaught_browser_errors": 0,
+      "supabase_mocked": true,
+      "form_css": "320px fits, two radios, >=44px submit and 3px focus outline"
+    }
+  },
+  "pages_expected_settings": {
+    "branch": "main",
+    "root": "repository root",
+    "build": "npm run build",
+    "output": "dist",
+    "node_file": ".node-version",
+    "build_variable_names": [
+      "VITE_SUPABASE_URL",
+      "VITE_SUPABASE_PUBLISHABLE_KEY"
+    ],
+    "spa": "Default Pages fallback; no top-level 404.html"
+  },
+  "dashboard_settings_applied": false,
+  "deployed": false,
+  "pending": [
+    "Cloudflare project/GitHub connection/actual build variables",
+    "Published fresh-clone verification",
+    "Public HTTPS and deep links/auth/workflow",
+    "Physical phone QR scan",
+    "Measured usable-page load <2s",
+    "200 simultaneous synthetic students through real API"
+  ],
+  "known_advisories": [
+    "13 moderate development-tooling audit findings",
+    "Existing >500kB main chunk advisory"
+  ],
+  "files_checked": {
+    "package_lock_sha256": "9b18bd19c85c80430902443c091db9fa2b3246291e9a0ce08d5f32bcaaf2fa7f"
+  },
+  "publication": "User authorized commit and push of verified preparation before first deployment; credentials, temporary files and screenshots excluded. Deployment remains pending."
+}
