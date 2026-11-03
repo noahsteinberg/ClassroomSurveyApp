@@ -1,0 +1,212 @@
+{
+  "reviewed_local_date": "2026-11-02",
+  "project_ref": "hmrtffcpoyksnwdquyow",
+  "security": {
+    "result": {
+      "lints": [
+        {
+          "name": "anon_security_definer_function_executable",
+          "title": "Public Can Execute SECURITY DEFINER Function",
+          "level": "WARN",
+          "facing": "EXTERNAL",
+          "categories": [
+            "SECURITY"
+          ],
+          "description": "Detects `SECURITY DEFINER` functions that are callable without signing in. Revoke `EXECUTE`, switch the function to `SECURITY INVOKER`, or move it out of your exposed API schema if it is not meant to be public.",
+          "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable",
+          "count": 3,
+          "findings": [
+            {
+              "detail": "Function `public.rls_auto_enable()` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/rls_auto_enable`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "rls_auto_enable",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-03T00:37:17.311Z"
+            },
+            {
+              "detail": "Function `public.submit_survey_response(p_survey_id uuid, p_anonymous_token text, p_answers jsonb)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/submit_survey_response`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "submit_survey_response",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "p_survey_id uuid, p_anonymous_token text, p_answers jsonb",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-03T00:37:17.311Z"
+            },
+            {
+              "detail": "Function `public.survey_availability(p_slug text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/survey_availability`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "survey_availability",
+                "schema": "public",
+                "language": "sql",
+                "arguments": "p_slug text",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-03T00:37:17.311Z"
+            }
+          ]
+        },
+        {
+          "name": "authenticated_security_definer_function_executable",
+          "title": "Signed-In Users Can Execute SECURITY DEFINER Function",
+          "level": "WARN",
+          "facing": "EXTERNAL",
+          "categories": [
+            "SECURITY"
+          ],
+          "description": "Detects `SECURITY DEFINER` functions that are callable by signed-in users. Revoke `EXECUTE`, switch the function to `SECURITY INVOKER`, or move it out of your exposed API schema if signed-in users should not call it.",
+          "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable",
+          "count": 6,
+          "findings": [
+            {
+              "detail": "Function `public.activate_survey(p_survey_id uuid)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/activate_survey`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "activate_survey",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "p_survey_id uuid",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-03T00:37:17.311Z"
+            },
+            {
+              "detail": "Function `public.archive_survey(p_survey_id uuid)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/archive_survey`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "archive_survey",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "p_survey_id uuid",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-03T00:37:17.311Z"
+            },
+            {
+              "detail": "Function `public.close_survey(p_survey_id uuid)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/close_survey`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "close_survey",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "p_survey_id uuid",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-03T00:37:17.311Z"
+            },
+            {
+              "detail": "Function `public.rls_auto_enable()` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/rls_auto_enable`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "rls_auto_enable",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-03T00:37:17.311Z"
+            },
+            {
+              "detail": "Function `public.submit_survey_response(p_survey_id uuid, p_anonymous_token text, p_answers jsonb)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/submit_survey_response`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "submit_survey_response",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "p_survey_id uuid, p_anonymous_token text, p_answers jsonb",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-03T00:37:17.311Z"
+            },
+            {
+              "detail": "Function `public.survey_availability(p_slug text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/survey_availability`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "survey_availability",
+                "schema": "public",
+                "language": "sql",
+                "arguments": "p_slug text",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-03T00:37:17.311Z"
+            }
+          ]
+        },
+        {
+          "name": "auth_leaked_password_protection",
+          "title": "Leaked Password Protection Disabled",
+          "level": "WARN",
+          "facing": "EXTERNAL",
+          "categories": [
+            "SECURITY"
+          ],
+          "description": "Leaked password protection is currently disabled.",
+          "remediation": "https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection",
+          "count": 1,
+          "findings": [
+            {
+              "detail": "Supabase Auth prevents the use of compromised passwords by checking against HaveIBeenPwned.org. Enable this feature to enhance security.",
+              "metadata": {
+                "type": "auth",
+                "entity": "Auth"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "performance": {
+    "result": {
+      "lints": [
+        {
+          "name": "unused_index",
+          "title": "Unused Index",
+          "level": "INFO",
+          "facing": "EXTERNAL",
+          "categories": [
+            "PERFORMANCE"
+          ],
+          "description": "Detects if an index has never been used and may be a candidate for removal.",
+          "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index",
+          "count": 2,
+          "findings": [
+            {
+              "detail": "Index \\`surveys_status_idx\\` on table \\`public.surveys\\` has not been used",
+              "metadata": {
+                "name": "surveys",
+                "type": "table",
+                "schema": "public"
+              },
+              "observed_at": "2026-11-03T00:37:17.367Z"
+            },
+            {
+              "detail": "Index \\`responses_submitted_at_idx\\` on table \\`public.responses\\` has not been used",
+              "metadata": {
+                "name": "responses",
+                "type": "table",
+                "schema": "public"
+              },
+              "observed_at": "2026-11-03T00:37:17.367Z"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "disposition": {
+    "app_definer_rpcs": "Intentional; public-key API authorization and validation tests passed. Retain required grants.",
+    "rls_auto_enable": "Pre-existing event-trigger function; ordinary public RPC execution rejected with HTTP 400/0A000. Optional revoke of browser EXECUTE grants in a separate reviewed migration; not applied.",
+    "leaked_password_protection": "Disabled. Supabase documentation says Pro plan or above. No paid upgrade or setting change made; use strong unique instructor password.",
+    "unused_indexes": "Two informational findings remain after tests. Retain pending representative workload; no indexes removed."
+  },
+  "independent_cleanup": {
+    "surveys": 0,
+    "questions": 0,
+    "choices": 0,
+    "responses": 0,
+    "answers": 0,
+    "nonanonymous_users": 1,
+    "anonymous_users": 0
+  },
+  "schema_or_auth_setting_changes_made": false
+}

@@ -119,3 +119,164 @@ Verification after the normal audit fix: reran lint, production build (includes 
 Pre-publication verification completed: lint, TypeScript/production build, and format:check all exited 0 after audit review and again after removal of two unused scaffold assets. Production audit reports zero vulnerabilities; full audit remains 13 moderate development findings. The audit fix introduced no dependency version changes. A custom pattern scan of all 29 staged text files checked private-key blocks, GitHub/AWS/Supabase credentials, JWTs, credential-bearing URLs, and secret-like assignments. Only three reviewed placeholders matched: the `.env.example` anon-key placeholder and two anonymous browser-token examples in API.md. No actual credentials were identified by this scan; it is a pattern-based review, not a guarantee against all possible secrets. Staged paths exclude private environment files, node_modules, and dist. All five unchanged assignment/spec source SHA-256 hashes still match pre-setup values. `git diff --cached --check` passed. No existing commits/history were present to scan. Ready to create and push the authorized Phase 1 commit; outcome will be verified against the remote.
 
 Publication verified: Phase 1 commit `afdba5689d2000bf674d79b49d68dd0d64ddff5d` was pushed successfully with `git push -u origin main`. `git ls-remote origin refs/heads/main` matched local HEAD; working tree was clean and main tracks origin/main. Checked only the original Push the project to GitHub task after this verification; hosting/deployment and other submission tasks remain unchecked. This follow-up documentation change records the verified publication outcome.
+
+## 2026-11-02 ? Accepted decisions and Phase 2 preparation
+
+### Authorization and accepted decisions
+
+User accepted the recommendations from the Phase 2 review and requested local migrations/security tests, with no application to Supabase and no commit. Prior permission to publish Phase 1 does not authorize publishing this work. Only disposable, isolated local PostgreSQL was used for database verification; no hosted project was configured, linked, queried, or changed.
+
+The following earlier proposals are now accepted:
+
+- Single-instructor/shared workspace: manually provisioned email/password Auth users are trusted instructors. Disable public signup, anonymous Auth sign-ins, and unused providers; students never receive Auth accounts. No instructor ownership columns or multi-tenant behavior in V1. A separate privately provisioned grader account would receive the same instructor rights. Hosted configuration remains a required external step, not a database test result.
+- **Draft-only editing**: title, description, questions, and choices become immutable after activation, including after closing/archiving. Duplicate a collected survey into a new draft for changes. This deliberately supersedes the supplied TODO task ?Prevent editing an active survey unless it is first closed.? Updated that task to reflect the accepted rule while leaving DATABASE.md/API.md/UI.md/overall specification/assignment source files untouched. The assignment's draft-editing requirement and historical result integrity motivate the change.
+- Lifecycle is draft -> active -> closed -> archived, with no reactivation. Activation atomically closes the prior active survey. Explicit deletion is allowed for nonactive surveys, cascades all related records, and must later have the specified UI confirmation; an active survey must be closed first. Archiving retains records.
+- At least one question per activated survey; all questions require exactly one choice. MC needs at least two nonblank choices; TF uses True/False at fixed positions 1/2. Incomplete drafts may exist, but cannot activate. Reordering uses positive positions and deferred parent/position uniqueness constraints.
+- Anonymous submissions use one transactional RPC and a lowercase random UUID browser token. Require that token and database uniqueness per survey/token. No direct response/answer insertion or mutation privileges for browser roles. Instructor result data is read-only through the browser; deleting a survey intentionally removes it by cascade. Clearing storage/another browser still bypasses accidental-duplicate protection.
+- Public URL is `/s/:slug`, with a random UUID string generated on first activation (an option explicitly allowed in DATABASE.md). The availability lookup returns only active/closed/not_found; archived counts as closed and inactive content remains private.
+
+Earlier result-percentage/CSV/polling/performance-measurement proposals are not settled by this database-only implementation. Their checklist tasks remain open. No frontend Auth/database integration, login UI, survey editor, or duplication UI/RPC was added.
+
+### Prepared files and security implementation
+
+- `supabase/migrations/20261102000100_schema.sql`: five tables, primary/foreign keys, cascading relationships, indexes, timestamps, status/type/text/position validation, required UUID browser tokens, duplicate uniqueness, one-active index, immutable content/lifecycle triggers, and inserted-answer relationship validation. Retains the supplied nullable choice/on-delete-set-null shape; the student RPC always requires a valid choice. V1 text_answer is constrained to null.
+- `supabase/migrations/20261102000200_security_and_rpcs.sql`: enables RLS for all tables, explicitly resets browser table grants, permits anonymous active-content SELECT only, grants instructor column-limited draft CRUD and read-only result SELECT, and adds activate/close/archive/submission/availability functions. Direct status/slug/identity updates are denied by column privileges. Private helpers have no browser schema access or execution privileges. Privileged functions use an empty search_path, qualified references, restricted EXECUTE grants, and explicit instructor checks where needed.
+- Transactions coordinate lifecycle through an advisory lock, edits through parent survey locks, and submissions through shared survey-row locks. Concurrent submissions need not serialize globally. Closing waits for previously accepted submissions; requests behind a completed close fail. Activate validates the full structure under its lock; historical content cannot be reopened for editing.
+- `supabase/tests/local/bootstrap.sql` and `fixtures.sql`: synthetic fixtures and minimal Supabase-compatible role/auth.uid interface exclusively for an isolated test database. Not production migrations. Bootstrap requires the exact test database name.
+- `supabase/tests/database/security.sql`: plain SQL regression assertions, not pgTAP. Fails on wrong grants, wrong/missing errors, integrity mistakes, partial writes, or changed visibility. Transaction rolls back test mutations.
+- `scripts/test-database.mjs` and `npm run test:db`: starts a disposable postgres:17-alpine container with no network/host ports, applies the migrations to a fresh local database, executes SQL tests and concurrent sessions, then removes the exact container in finally. Reads no Supabase environment variables or credentials and contains no hosted apply/reset commands. Docker may download the public image when needed. No new npm dependencies were introduced; ESLint's Node globals and formatting scripts now include this runner.
+- `supabase/README.md` and main README: document accepted behavior, security boundaries, RPC contracts, test instructions/limitations, and future Supabase setup. Hosted integration will use the recommended publishable key, with a future rename of the existing anon-key placeholder; no environment configuration was changed now.
+
+### Verification performed
+
+Docker engine was available (29.1.5). `npm run test:db` applied both migrations to a fresh isolated PostgreSQL 17 database successfully. Final expanded run passed **73 SQL assertions** plus these **five real concurrent-session scenarios**:
+
+1. Two same-token submissions yield exactly one complete response and two answers.
+2. A submission waiting behind an uncommitted close fails after close commits, without inserting data.
+3. Close waits for an earlier accepted submission to commit; that response remains stored.
+4. Activation waits for a draft edit to commit and subsequently rejects content edits.
+5. Concurrent activation requests both finish, automatically close the prior active survey, and leave exactly one survey active.
+
+SQL coverage includes anonymous active-only content, denied results/table mutation/instructor/private RPC calls, instructor identity checks and draft CRUD, denial of direct status/slug changes, required fields and activation validity, malformed/missing/duplicate/cross-survey answers, invalid tokens, duplicate submissions, an intentionally forced answer-storage failure that rolls back its response, immutable active/closed/archived content, retention on close/archive, explicit delete cascades, privileged search_path settings, and the one-active unique index.
+
+After adding the runner, `npm run lint`, `npm run build` (TypeScript + Vite), and `npm run format:check` each exited 0. `git diff --check` passed. Test containers were removed; no matching container remained. Only local preparation tasks are eligible for completion; original Phase 2 Supabase creation/application/security-verification items remain unchecked.
+
+### Problems found and corrected during verification
+
+- Initial container readiness checked the Unix socket, which briefly accepts connections during PostgreSQL initialization before restart. The first run failed with ?database system is shutting down.? Changed readiness to the container's loopback TCP endpoint, which becomes available only for the final server; fresh-database reruns passed. No host port was opened.
+- ESLint flagged an assertion-count regex containing literal repeated spaces. Replaced it with a whitespace expression and reran lint/build/format/database tests successfully.
+
+### Practical limits / remaining work
+
+Local auth.uid/roles are a test interface, not a real Supabase Auth/JWT service. Hosted Auth settings, public signup rejection, actual instructor login, PostgREST grants/exposure, publishable-key configuration, real database records/screenshots, refresh/browser behavior, and classroom performance remain unverified. Read Committed transactions are the intended runtime isolation; unexpected transient concurrency errors should be retried appropriately in later frontend integration. The earlier 13 moderate development dependency findings are unchanged by this SQL/test-only work. No secrets or real student data are needed for this test suite.
+
+The next hosted step requires separate authorization to apply reviewed migrations to the intended project. No commit, push, Supabase application, or deployment was performed in this preparation pass.
+
+Final preparation audit passed: all five supplied source-document SHA-256 hashes match the saved pre-setup values, git reports no spec changes, new SQL/runner files have no trailing whitespace or merge markers, original hosted Phase 2 tasks remain unchecked, staging is empty, and HEAD remains c8d5aee. A direct working-file-versus-Git-blob comparison initially differed because Git normalizes CRLF; the saved byte hashes confirmed the working source files are unchanged.
+
+## 2026-11-02 ? Supabase connection readiness; no hosted changes
+
+User reports project hmrtffcpoyksnwdquyow is ready and supplied the project-scoped MCP setup command. Authorized configuring/authenticating the connection and checking MCP/CLI readiness, explicitly not applying migrations. Provided dashboard walkthrough for disabling public signup and anonymous Auth sign-ins, retaining email/password login, and manually creating/confirming the instructor account. Those settings and the user account have not been independently inspected or verified; no associated task was checked.
+
+Ran `codex mcp add supabase --url` with the exact supplied project-scoped URL/features. This created the global Codex server entry and automatically initiated browser OAuth; the command completed with ?Successfully logged in.? A separate login was unnecessary. `codex mcp get supabase` confirmed enabled streamable HTTP and the intended project_ref; `codex mcp list --json` reported auth_status o_auth. No tokens/passwords were copied into the repository or notes. The currently running chat still exposes no Supabase tool names, so live project access or migration execution permissions cannot yet be asserted. Refresh/restart the Codex session to load the new server; then use only read-only metadata checks until migration application is separately authorized. Supabase's documented database feature includes list_migrations/list_tables/apply_migration; presence in the documentation is not proof of runtime access.
+
+The Supabase executable was absent from PATH, but `npm exec --yes --package=supabase -- supabase --version` works and reports 3.0.0. The read-only `supabase projects list` failed with AccessTokenRequiredError: CLI login or SUPABASE_ACCESS_TOKEN is required. MCP OAuth is separate from CLI authentication. Inspected only `supabase db push --help`; did not run db push, link, init, migration application, or hosted SQL. No optional agent skills were installed. No Auth settings/users were changed, and no commit or push was made. Existing Phase 2 preparation remains uncommitted.
+
+References checked: official OpenAI Docs MCP setup (https://developers.openai.com/learn/docs-mcp), Supabase MCP (https://supabase.com/docs/guides/ai-tools/mcp), Auth general configuration (https://supabase.com/docs/guides/auth/general-configuration), and Auth users (https://supabase.com/docs/guides/auth/users).
+
+## 2026-11-02 ? Live MCP target and empty application schema verified
+
+User reports completing Auth setup and requested read-only MCP verification, explicitly no migration application. The live Supabase tools are now available. `get_project_url` returned https://hmrtffcpoyksnwdquyow.supabase.co, matching the intended project reference. `list_tables` for public/private returned no tables. `list_migrations` returned an empty migration history. A read-only pg_catalog.pg_tables summary found only built-in schemas: auth (27 tables), realtime (3), storage (8), and vault (1); no application tables exist. No table rows, passwords, keys, or private account details were retrieved.
+
+MCP connection and read access are confirmed. The apply_migration tool is available, but actual write permissions are not proven by these read-only checks. Both reviewed local Phase 2 migration files remain unapplied. User-reported Auth configuration/account completion has not been independently validated by this metadata inspection. No hosted SQL writes, configuration changes, commits, or pushes were performed. Original hosted Phase 2 tasks remain pending except that project existence is now confirmed by live access.
+
+## 2026-11-02 ? Two reviewed migrations applied to hosted Supabase
+
+### Scope, target, and exact application
+
+User explicitly authorized applying the two reviewed migrations through MCP, verifying hosted tables/relationships/RLS/permissions, and updating notes/TODO; no commit or push. Rechecked `get_project_url` immediately before application: https://hmrtffcpoyksnwdquyow.supabase.co. `list_tables(public,private)` and `list_migrations` were still empty, so no application tables or existing migration history would conflict.
+
+Read the reviewed local SQL files without modifying their contents, then called `apply_migration` sequentially: schema first, security_and_rpcs second. Both returned success=true. Hosted `list_migrations` confirms:
+
+| Reviewed local file | MCP-recorded version/name | Current local filename |
+| --- | --- | --- |
+| 20261102000100_schema.sql | 20261102195952 / schema | 20261102195952_schema.sql |
+| 20261102000200_security_and_rpcs.sql | 20261102195955 / security_and_rpcs | 20261102195955_security_and_rpcs.sql |
+
+MCP assigns migration timestamps. Renamed the two uncommitted local files to match hosted history so a future CLI push does not mistake them for unapplied migrations. SQL bytes are unchanged: schema SHA256 bd2180497d5289477be0787b6753d858322ad5455260d142e799ac27df08dd87; security/RPC SHA256 8933a681dc3b14303c7ae96ece229b86f84511dcd10bf14a43c0bef821e174a6. Updated current README references; earlier notes retain their historical filenames. No test bootstrap/fixture SQL was applied to Supabase and no third migration was added.
+
+### Verified hosted structure and permissions
+
+Read-only pg_catalog/information_schema inspection and explicit assertions confirmed:
+
+- Five public tables: surveys, questions, choices, responses, answers; RLS enabled on every one. All five remain empty after verification; no synthetic or real survey records were inserted.
+- Six foreign keys: questions -> surveys, choices -> questions, responses -> surveys, answers -> responses/questions/choices. Deletes cascade for the first five; answers.choice_id uses ON DELETE SET NULL as specified.
+- 19 indexes including primary/unique constraint indexes. One-active partial unique index, survey/token response uniqueness, answer-per-response/question uniqueness, and deferred parent/position uniqueness are present. Nonblank fields, valid survey/question types, required UUID token and other schema checks are installed.
+- Required timestamptz fields have nonnull now() defaults. The survey trigger sets updated_at on updates. Four application triggers are enabled, covering survey lifecycle/timestamps, draft-only question and choice editing, and answer membership.
+- Eight policies: three anonymous active-content read policies, three authenticated instructor content-management policies, and two authenticated results-read policies. Instructor policy identity checks use auth.uid().
+- Anonymous role has SELECT only on surveys/questions/choices under RLS; no results SELECT and no INSERT/UPDATE/DELETE/TRUNCATE access to any of the five tables. Authenticated role can SELECT all five, insert/update only allowed content columns and delete nonactive surveys/content subject to triggers/RLS. Responses and answers are read-only for browser roles. Direct status/slug/identity updates are not granted.
+- All ten application functions are SECURITY DEFINER with empty search_path and reviewed definitions. Only authenticated can execute activate/close/archive, whose bodies explicitly require instructor identity. Anon/authenticated can execute submission and availability intentionally. The five private helpers deny both browser roles EXECUTE and schema USAGE.
+
+Sanitized catalog/advisor evidence is saved at `supabase/verification/2026-11-02-hosted-audit.json`. No passwords, keys, user rows, or response data were retrieved for this audit.
+
+### Effective hosted SQL-role checks
+
+Used transactions with READ ONLY and SET LOCAL ROLE, then ROLLBACK; no fixture creation or persistent data writes:
+
+- As anon, survey/question/choice SELECT ran and returned zero visible rows (database is empty). Direct SELECT on responses and answers each raised insufficient_privilege, as expected. Mutation privilege checks were false. Checked the original ?students cannot read survey results? task based on this actual database-role denial; public Data API denial is still a separate pending check.
+- As authenticated with empty JWT claims/no auth.uid(), survey SELECT returned zero visible rows and close_survey rejected the caller with AUTHENTICATION_REQUIRED. This proves the identity guard works in hosted PostgreSQL, not that the real instructor login/JWT flow works.
+
+### Advisor findings and disposition
+
+Security advisors returned WARN groups, not a clean report:
+
+1. Anonymous/signed-in execution of SECURITY DEFINER functions: submission/availability and instructor lifecycle functions are intentionally exposed with validation, explicit identity checks, and execution grants. Preserve those grants; future real API tests must verify them. References: https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable and https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable .
+2. Pre-existing Supabase `public.rls_auto_enable()` is an event-trigger function with browser EXECUTE grants and search_path=pg_catalog. It was not defined or modified by our migrations; pg_get_functiondef identifies its event-trigger purpose. Generic advisor text describes it as an RPC, but PostgreSQL event-trigger functions are not ordinary callable functions. Record a separate hardening review of unnecessary grants rather than silently changing platform-owned behavior now.
+3. Leaked-password protection is disabled. No Auth setting was changed. Consider enabling it if available for the project's plan; this is separate from signup/anonymous-sign-in controls. Reference: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection .
+
+Performance advisors report eight never-used indexes on the new empty tables. Retained the specified indexes; absence of workload is not evidence to remove them. Reference: https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index .
+
+### Tracking and remaining hosted work
+
+Checked only verified Phase 2 project/table/foreign-key/index/timestamp/status/RLS creation and database-role results denial tasks, plus the explicit hosted catalog/application checklist. The three original checks for anonymous active reads, successful anonymous submission, and authenticated instructor access remain unchecked because they require real data/API identity workflows. Also still pending: independently verify signup/anonymous Auth settings and confirmed instructor account/login; publishable-key/PostgREST/JWT behavior; valid/invalid/duplicate/post-close submissions and persistence; draft-only editing through the API; hosted lifecycle/concurrency tests; actual records/screenshots; and later browser/mobile/QR/performance checks.
+
+Updated READMEs to stop claiming migrations are unapplied. Added Supabase CLI .temp/.branches cache paths to .gitignore after noticing its generated cli-latest cache; no generated runtime state should enter a future commit. No npm dependencies or application source changed in this pass. No commit, push, frontend implementation, deployment, Auth change, or unreviewed schema hardening was performed.
+
+## 2026-11-02 — Hosted Phase 2 complete; testing stopped
+
+User authorized hosted synthetic-data checks, private instructor login guidance, advisor review, and documentation only. Then explicitly requested finishing the record and stopping Phase 2 tests. From now on, keep checks focused on assignment requirements and affected features; do not repeat or broaden passed checks without a relevant change or failure. No commits or pushes are authorized.
+
+### Verified results
+
+Real instructor password login succeeded through a temporary loopback-only form. The confirmed, nonanonymous user's JWT stayed in memory. Passwords, email, access tokens and refresh tokens were not written to the repository or reports. The temporary session was signed out. The ignored URL/publishable-key configuration was removed; the completed helper process no longer runs. This helper is test infrastructure, not the Phase 3 login UI.
+
+All **47 hosted API checks passed** using the publishable key and real instructor JWT. Four uniquely labeled synthetic surveys were used. Evidence: `supabase/verification/2026-11-02-hosted-api-tests.json`.
+
+- Public Auth settings independently confirmed signup disabled, anonymous Auth disabled, email enabled, and other listed providers disabled. Actual synthetic signup and anonymous-Auth requests were rejected.
+- Instructor draft CRUD, MC/TF question/choice creation, subsequent-request persistence, and result-data reads succeeded. These verify the database interfaces needed for export, not CSV generation or charts.
+- Anonymous active-content reads succeeded; draft/closed content was hidden. Results/answers, direct writes, and instructor RPCs were denied. Direct instructor status changes were denied.
+- Missing/malformed/duplicate/cross-survey answers, mismatched choices, invalid tokens, and inactive submissions were rejected without partial responses. Valid submissions persisted complete answers and timestamps. Same-token retries were rejected.
+- Active/closed content remained immutable; reactivation was rejected. Archive preserved collected responses and questions. Previous active surveys closed automatically.
+- Concurrent same-token submissions produced one complete response. Concurrent close/submission and edit/activation respected valid lifecycle ordering; requests after completed close/activation were rejected. Concurrent activation left exactly one active survey. This small race suite is not a classroom load test.
+- The pre-existing rls_auto_enable event-trigger function rejected ordinary public RPC invocation with HTTP 400 / SQLSTATE 0A000.
+
+Cleanup deleted only the four test-owned surveys and dependent records. An independent MCP query confirmed surveys=0, questions=0, choices=0, responses=0, answers=0; one nonanonymous Auth user and zero anonymous Auth users remain. No fixtures or new Auth users remain. Reports use UTC timestamps; the local work date was November 2 in America/New_York.
+
+`npm run lint`, `npm run build` (TypeScript + Vite), and `npm run format:check` passed after adding the hosted test scripts. The helper retained runtime handles briefly after signout; added explicit termination after completed cleanup/signout, then lint and formatting checks passed again. The successful test assertions were unchanged; no repeated hosted run is required.
+
+### Advisor disposition and actual blockers
+
+There are **no actual Phase 2 blockers**. All original Phase 2 tasks and the specific hosted configuration/API tasks are now checked using the evidence above. Earlier pending-check lists in these notes are historical and superseded by this entry.
+
+- App SECURITY DEFINER RPC exposure is intentional. Safe search paths, execution grants, authorization and validation were inspected and exercised through the real API. Retain required grants; no change is needed merely to suppress generic warnings. [Anonymous-function warning](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable), [signed-in-function warning](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
+- Pre-existing rls_auto_enable is an event-trigger helper, not an ordinary callable RPC; the actual API rejected invocation. Optional least-privilege cleanup would revoke PUBLIC/anon/authenticated EXECUTE while retaining and verifying its event trigger, in a separately reviewed migration. No third migration or grant change was applied. [Event trigger guidance](https://supabase.com/docs/guides/database/postgres/event-triggers).
+- Leaked-password protection is disabled and requires Pro or above according to Supabase documentation. Enable it if already available; otherwise document the free-plan limitation and use a strong unique instructor password. No paid upgrade or Auth-setting change was made. [Password protection](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+- Unused-index notices dropped from eight to two after the tests: surveys_status_idx and responses_submitted_at_idx. Retain them until representative queries justify removal. [Index advisory](https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index).
+
+Final advisor evidence: `supabase/verification/2026-11-02-advisor-review.json`. Optional hardening/settings actions remain unchecked and do not block the assignment's next phase. Frontend login, survey workflows, CSV/charts, mobile/QR, required classroom performance, deployment, and submission screenshots are later assignment work, not outstanding Phase 2 failures.
+
+Testing is stopped. No additional database/schema/settings changes, commits, or pushes were made during this verification pass.
+
+## 2026-11-02 ? Phase 2 publication authorized
+
+User authorized committing and pushing the completed Phase 2 work. This supersedes the earlier no-commit/no-push hold for the recorded migrations, tests, evidence, and documentation. Hosted testing remains stopped; publication checks are limited to staged-file review, secret-pattern scanning, whitespace, and repository state. Prior passing build/lint/format and hosted test results remain the verification evidence; no database tests or hosted changes are repeated for publication.

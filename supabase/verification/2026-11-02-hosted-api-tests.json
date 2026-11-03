@@ -1,0 +1,199 @@
+{
+  "project_ref": "hmrtffcpoyksnwdquyow",
+  "run_id": "eef996f8-b32f-412b-919d-7c47ba9e53e3",
+  "completed_at": "2026-11-03T00:36:48.062Z",
+  "instructor_password_login": true,
+  "credentials_or_tokens_recorded": false,
+  "fixture_surveys_created": 4,
+  "results": [
+    {
+      "check": "public signup disabled; anonymous Auth disabled; email provider enabled",
+      "passed": true
+    },
+    {
+      "check": "public signup request rejected without creating an account",
+      "passed": true
+    },
+    {
+      "check": "anonymous Auth request rejected",
+      "passed": true
+    },
+    {
+      "check": "no pre-existing active survey will be disrupted",
+      "passed": true
+    },
+    {
+      "check": "real instructor JWT creates draft surveys, MC/TF questions, and choices",
+      "passed": true
+    },
+    {
+      "check": "instructor draft edit persists across independent API requests",
+      "passed": true
+    },
+    {
+      "check": "anonymous cannot read draft content",
+      "passed": true
+    },
+    {
+      "check": "anonymous results access denied",
+      "passed": true
+    },
+    {
+      "check": "anonymous answer access denied",
+      "passed": true
+    },
+    {
+      "check": "anonymous direct survey mutation denied",
+      "passed": true
+    },
+    {
+      "check": "anonymous direct response insert denied",
+      "passed": true
+    },
+    {
+      "check": "anonymous direct answer insert denied",
+      "passed": true
+    },
+    {
+      "check": "anonymous activation RPC denied",
+      "passed": true
+    },
+    {
+      "check": "instructor direct status mutation denied",
+      "passed": true
+    },
+    {
+      "check": "submission to draft rejected",
+      "passed": true
+    },
+    {
+      "check": "anonymous active survey resolves by public slug",
+      "passed": true
+    },
+    {
+      "check": "anonymous reads only active questions and choices",
+      "passed": true
+    },
+    {
+      "check": "availability RPC reveals minimal active state",
+      "passed": true
+    },
+    {
+      "check": "missing required answers rejected",
+      "passed": true
+    },
+    {
+      "check": "malformed answer object rejected",
+      "passed": true
+    },
+    {
+      "check": "non-array payload rejected",
+      "passed": true
+    },
+    {
+      "check": "duplicate question rejected",
+      "passed": true
+    },
+    {
+      "check": "cross-survey question rejected",
+      "passed": true
+    },
+    {
+      "check": "mismatched choice rejected",
+      "passed": true
+    },
+    {
+      "check": "invalid browser token rejected",
+      "passed": true
+    },
+    {
+      "check": "rejected submissions create no partial response rows",
+      "passed": true
+    },
+    {
+      "check": "anonymous valid submission succeeds",
+      "passed": true
+    },
+    {
+      "check": "response and complete answers persist on subsequent requests",
+      "passed": true
+    },
+    {
+      "check": "same-token retry rejected",
+      "passed": true
+    },
+    {
+      "check": "concurrent same-token requests store one complete response",
+      "passed": true
+    },
+    {
+      "check": "instructor results counts and choices match known synthetic submissions",
+      "passed": true
+    },
+    {
+      "check": "instructor cannot rewrite collected answers",
+      "passed": true
+    },
+    {
+      "check": "active survey title edit rejected",
+      "passed": true
+    },
+    {
+      "check": "active choice edit rejected",
+      "passed": true
+    },
+    {
+      "check": "concurrent close/submission has valid ordering",
+      "passed": true
+    },
+    {
+      "check": "submissions after completed close rejected",
+      "passed": true
+    },
+    {
+      "check": "closed survey and choices hidden from anonymous clients",
+      "passed": true
+    },
+    {
+      "check": "closed link returns availability only",
+      "passed": true
+    },
+    {
+      "check": "closed survey content remains immutable",
+      "passed": true
+    },
+    {
+      "check": "collected survey cannot reactivate",
+      "passed": true
+    },
+    {
+      "check": "archive preserves instructor-readable submissions and original questions",
+      "passed": true
+    },
+    {
+      "check": "concurrent draft edit/activation has valid ordering",
+      "passed": true
+    },
+    {
+      "check": "content edit after activation completes rejected",
+      "passed": true
+    },
+    {
+      "check": "concurrent activations succeed with exactly one active survey",
+      "passed": true
+    },
+    {
+      "check": "previous active survey automatically closed",
+      "passed": true
+    },
+    {
+      "check": "platform event-trigger helper is not callable as an ordinary API RPC",
+      "passed": true
+    },
+    {
+      "check": "all test-owned synthetic surveys and dependent records removed",
+      "passed": true
+    }
+  ],
+  "cleanup_passed": true
+}

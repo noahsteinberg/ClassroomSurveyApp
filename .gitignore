@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 dist/
 .env
 .env.*
@@ -12,3 +12,7 @@ coverage/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Supabase CLI cache and local runtime state
+supabase/.temp/
+supabase/.branches/

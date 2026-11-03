@@ -2,7 +2,7 @@
 
 ## Tracking rules
 
-All inherited completion marks were reset on 2026-11-02 because this folder contains only the supplied documents. Check a task only after verifying its acceptance criteria and recording the command, observation, or evidence in `development-notes.md`. Generated code or a successful build alone does not prove a feature works. Existing phases remain the implementation roadmap; Phase 16 is optional and outside assignment completion. Phase 1 setup and local Git initialization/remote connection were authorized on 2026-11-02. The user subsequently authorized dependency review and committing/pushing the verified Phase 1 setup. Later feature implementation and deployment remain on hold.
+All inherited completion marks were reset on 2026-11-02 because this folder contains only the supplied documents. Check a task only after verifying its acceptance criteria and recording the command, observation, or evidence in `development-notes.md`. Generated code or a successful build alone does not prove a feature works. Existing phases remain the implementation roadmap; Phase 16 is optional and outside assignment completion. Phase 1 setup and local Git initialization/remote connection were authorized on 2026-11-02. The user subsequently authorized dependency review and committing/pushing the verified Phase 1 setup. Phase 2 preparation and application of the two reviewed migrations to the verified Supabase project were authorized. Hosted schema/permission checks are recorded below; committing/pushing this work, later frontend features, and deployment remain on hold.
 
 ## Purpose
 
@@ -28,21 +28,21 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 2 — Supabase Project and Database
 
-- [ ] Create a Supabase project.
-- [ ] Create the `surveys` table.
-- [ ] Create the `questions` table.
-- [ ] Create the `choices` table.
-- [ ] Create the `responses` table.
-- [ ] Create the `answers` table.
-- [ ] Add foreign-key constraints.
-- [ ] Add database indexes.
-- [ ] Add timestamps.
-- [ ] Add survey-status validation.
-- [ ] Create Row Level Security policies.
-- [ ] Verify students cannot read survey results.
-- [ ] Verify anonymous students can read active surveys.
-- [ ] Verify anonymous students can submit responses.
-- [ ] Verify authenticated instructors have full access.
+- [x] Create a Supabase project.
+- [x] Create the `surveys` table.
+- [x] Create the `questions` table.
+- [x] Create the `choices` table.
+- [x] Create the `responses` table.
+- [x] Create the `answers` table.
+- [x] Add foreign-key constraints.
+- [x] Add database indexes.
+- [x] Add timestamps.
+- [x] Add survey-status validation.
+- [x] Create Row Level Security policies.
+- [x] Verify students cannot read survey results.
+- [x] Verify anonymous students can read active surveys.
+- [x] Verify anonymous students can submit responses.
+- [x] Verify authenticated instructors have full access.
 
 ---
 
@@ -93,7 +93,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [ ] Validate required fields.
 - [ ] Save a survey as Draft.
 - [ ] Load an existing survey for editing.
-- [ ] Prevent editing an active survey unless it is first closed.
+- [ ] Enforce draft-only editing: active, closed, and archived content stays immutable; duplicate into a new draft for changes (accepted change from the supplied close-then-edit task; see development-notes.md).
 
 ---
 
@@ -318,3 +318,38 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [ ] Review development-only npm audit findings (13 moderate reports through the minimatch/tooling chain as of Phase 1); choose a compatible patched dependency set and rerun lint/build. Production audit currently reports zero vulnerabilities.
 
 - [x] Review Phase 1 audit findings and attempt compatible remediation without force; document remaining upstream dependency constraints (normal npm audit fix made no changes).
+
+
+# Phase 2 preparation - local and hosted completion recorded below
+
+- [x] Record accepted instructor, draft-only editing, lifecycle, and submission decisions with security boundaries.
+- [x] Prepare versioned five-table schema, RLS/grants, validation triggers, and lifecycle/submission RPC migrations.
+- [x] Verify migrations apply to a fresh isolated local PostgreSQL database.
+- [x] Prepare and pass local role-based security/integrity regression tests and concurrency checks.
+- [x] Document test command, local Auth-model limitations, and future Supabase setup/application steps.
+- [x] Apply reviewed migrations to the intended Supabase project after separate authorization; verify real Auth/PostgREST behavior and configuration before marking original Phase 2 tasks complete.
+
+
+# Hosted Phase 2 application ? November 2, 2026
+
+- [x] Apply both reviewed migrations through MCP to verified project hmrtffcpoyksnwdquyow and confirm their migration-history entries.
+- [x] Inspect hosted tables, six relationships, constraints, timestamps, indexes, RLS policies, triggers, and table/column/function grants; save sanitized evidence.
+- [x] Check anonymous results denial and missing-identity instructor RPC denial under actual hosted SQL roles (not a browser/JWT test).
+- [x] Review hosted security/performance advisors and document remaining warnings without applying extra changes.
+- [x] Align local migration filenames with MCP-assigned versions, preserving reviewed SQL bytes.
+- [x] Independently verify public signup and anonymous Auth are disabled, instructor account is confirmed, and real instructor password login succeeds without recording credentials.
+- [x] Verify active-content reads and inactive-content/results denial through the public Data API with the publishable key.
+- [x] Verify valid, malformed, duplicate, cross-survey, and post-close student submissions through hosted RPC/API with synthetic data; inspect durable records and cleanup test data.
+- [x] Verify real instructor JWT permits draft CRUD, lifecycle operations, results/export reads, and enforces draft-only editing through the hosted API.
+- [x] Repeat critical concurrent submission/activation/close/edit tests against an authorized hosted test dataset; local-only concurrency checks do not establish hosted behavior.
+- [x] Review pre-existing public.rls_auto_enable event-trigger EXECUTE grants and leaked-password protection in a separately reviewed hardening/settings step.
+
+# Hosted Phase 2 completion - November 2, 2026
+
+- [x] Pass real instructor password login and use its JWT without persisting credentials or session tokens.
+- [x] Verify actual public signup and anonymous Auth requests are rejected.
+- [x] Pass 47 public-key/PostgREST security, validation, persistence, lifecycle, concurrency, and cleanup checks; save sanitized report.
+- [x] Independently verify cleanup through MCP: zero rows in all five application tables, one nonanonymous user, zero anonymous users.
+- [x] Review final advisor findings and document recommended actions without changing hosted schema or settings.
+- [ ] Optional separate hardening migration: revoke browser EXECUTE grants on the pre-existing rls_auto_enable event-trigger function and verify the event trigger still works.
+- [ ] Enable leaked-password protection if already on a qualifying plan; otherwise document the free-plan limitation and use a strong unique password. No paid upgrade without user direction.

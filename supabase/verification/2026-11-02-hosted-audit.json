@@ -1,0 +1,578 @@
+{
+  "verified_date": "2026-11-02",
+  "project_ref": "hmrtffcpoyksnwdquyow",
+  "migrations": [
+    {
+      "version": "20261102195952",
+      "name": "schema"
+    },
+    {
+      "version": "20261102195955",
+      "name": "security_and_rpcs"
+    }
+  ],
+  "source_files": [
+    {
+      "reviewed_filename": "20261102000100_schema.sql",
+      "sha256": "bd2180497d5289477be0787b6753d858322ad5455260d142e799ac27df08dd87"
+    },
+    {
+      "reviewed_filename": "20261102000200_security_and_rpcs.sql",
+      "sha256": "8933a681dc3b14303c7ae96ece229b86f84511dcd10bf14a43c0bef821e174a6"
+    }
+  ],
+  "tables": [
+    {
+      "rls": true,
+      "name": "surveys"
+    },
+    {
+      "rls": true,
+      "name": "questions"
+    },
+    {
+      "rls": true,
+      "name": "choices"
+    },
+    {
+      "rls": true,
+      "name": "responses"
+    },
+    {
+      "rls": true,
+      "name": "answers"
+    }
+  ],
+  "foreign_keys": [
+    {
+      "name": "questions_survey_id_fkey",
+      "table": "questions",
+      "definition": "FOREIGN KEY (survey_id) REFERENCES surveys(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "choices_question_id_fkey",
+      "table": "choices",
+      "definition": "FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "responses_survey_id_fkey",
+      "table": "responses",
+      "definition": "FOREIGN KEY (survey_id) REFERENCES surveys(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "answers_response_id_fkey",
+      "table": "answers",
+      "definition": "FOREIGN KEY (response_id) REFERENCES responses(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "answers_question_id_fkey",
+      "table": "answers",
+      "definition": "FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "answers_choice_id_fkey",
+      "table": "answers",
+      "definition": "FOREIGN KEY (choice_id) REFERENCES choices(id) ON DELETE SET NULL"
+    }
+  ],
+  "index_count": 19,
+  "policies": [
+    {
+      "cmd": "ALL",
+      "qual": "(( SELECT auth.uid() AS uid) IS NOT NULL)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "surveys",
+      "permissive": "PERMISSIVE",
+      "policyname": "instructors_manage_surveys",
+      "schemaname": "public",
+      "with_check": "(( SELECT auth.uid() AS uid) IS NOT NULL)"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(status = 'active'::text)",
+      "roles": [
+        "anon"
+      ],
+      "tablename": "surveys",
+      "permissive": "PERMISSIVE",
+      "policyname": "students_read_active_surveys",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(( SELECT auth.uid() AS uid) IS NOT NULL)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "questions",
+      "permissive": "PERMISSIVE",
+      "policyname": "instructors_manage_questions",
+      "schemaname": "public",
+      "with_check": "(( SELECT auth.uid() AS uid) IS NOT NULL)"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM surveys s\n  WHERE ((s.id = questions.survey_id) AND (s.status = 'active'::text))))",
+      "roles": [
+        "anon"
+      ],
+      "tablename": "questions",
+      "permissive": "PERMISSIVE",
+      "policyname": "students_read_active_questions",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(( SELECT auth.uid() AS uid) IS NOT NULL)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "choices",
+      "permissive": "PERMISSIVE",
+      "policyname": "instructors_manage_choices",
+      "schemaname": "public",
+      "with_check": "(( SELECT auth.uid() AS uid) IS NOT NULL)"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (questions q\n     JOIN surveys s ON ((s.id = q.survey_id)))\n  WHERE ((q.id = choices.question_id) AND (s.status = 'active'::text))))",
+      "roles": [
+        "anon"
+      ],
+      "tablename": "choices",
+      "permissive": "PERMISSIVE",
+      "policyname": "students_read_active_choices",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(( SELECT auth.uid() AS uid) IS NOT NULL)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "responses",
+      "permissive": "PERMISSIVE",
+      "policyname": "instructors_read_responses",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(( SELECT auth.uid() AS uid) IS NOT NULL)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "answers",
+      "permissive": "PERMISSIVE",
+      "policyname": "instructors_read_answers",
+      "schemaname": "public",
+      "with_check": null
+    }
+  ],
+  "triggers": [
+    {
+      "table": "surveys",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER surveys_guard BEFORE INSERT OR DELETE OR UPDATE ON public.surveys FOR EACH ROW EXECUTE FUNCTION private.guard_survey()"
+    },
+    {
+      "table": "questions",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER questions_guard BEFORE INSERT OR DELETE OR UPDATE ON public.questions FOR EACH ROW EXECUTE FUNCTION private.guard_question()"
+    },
+    {
+      "table": "choices",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER choices_guard BEFORE INSERT OR DELETE OR UPDATE ON public.choices FOR EACH ROW EXECUTE FUNCTION private.guard_choice()"
+    },
+    {
+      "table": "answers",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER answers_membership BEFORE INSERT ON public.answers FOR EACH ROW EXECUTE FUNCTION private.guard_answer_membership()"
+    }
+  ],
+  "functions": [
+    {
+      "name": "close_survey",
+      "schema": "public",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "identity_arguments": "p_survey_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "archive_survey",
+      "schema": "public",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "identity_arguments": "p_survey_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "survey_availability",
+      "schema": "public",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon_execute": true,
+      "security_definer": true,
+      "identity_arguments": "p_slug text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "rls_auto_enable",
+      "schema": "public",
+      "settings": [
+        "search_path=pg_catalog"
+      ],
+      "anon_execute": true,
+      "security_definer": true,
+      "identity_arguments": "",
+      "authenticated_execute": true
+    },
+    {
+      "name": "guard_survey",
+      "schema": "private",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "identity_arguments": "",
+      "authenticated_execute": false
+    },
+    {
+      "name": "guard_question",
+      "schema": "private",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "identity_arguments": "",
+      "authenticated_execute": false
+    },
+    {
+      "name": "guard_choice",
+      "schema": "private",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "identity_arguments": "",
+      "authenticated_execute": false
+    },
+    {
+      "name": "guard_answer_membership",
+      "schema": "private",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "identity_arguments": "",
+      "authenticated_execute": false
+    },
+    {
+      "name": "require_instructor",
+      "schema": "private",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "identity_arguments": "",
+      "authenticated_execute": false
+    },
+    {
+      "name": "activate_survey",
+      "schema": "public",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "identity_arguments": "p_survey_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "submit_survey_response",
+      "schema": "public",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anon_execute": true,
+      "security_definer": true,
+      "identity_arguments": "p_survey_id uuid, p_anonymous_token text, p_answers jsonb",
+      "authenticated_execute": true
+    }
+  ],
+  "private_schema_access": {
+    "anon": false,
+    "authenticated": false
+  },
+  "security_advisors": {
+    "result": {
+      "lints": [
+        {
+          "name": "anon_security_definer_function_executable",
+          "title": "Public Can Execute SECURITY DEFINER Function",
+          "level": "WARN",
+          "facing": "EXTERNAL",
+          "categories": [
+            "SECURITY"
+          ],
+          "description": "Detects `SECURITY DEFINER` functions that are callable without signing in. Revoke `EXECUTE`, switch the function to `SECURITY INVOKER`, or move it out of your exposed API schema if it is not meant to be public.",
+          "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable",
+          "count": 3,
+          "findings": [
+            {
+              "detail": "Function `public.rls_auto_enable()` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/rls_auto_enable`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "rls_auto_enable",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-02T20:00:03.525Z"
+            },
+            {
+              "detail": "Function `public.submit_survey_response(p_survey_id uuid, p_anonymous_token text, p_answers jsonb)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/submit_survey_response`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "submit_survey_response",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "p_survey_id uuid, p_anonymous_token text, p_answers jsonb",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-02T20:00:03.525Z"
+            },
+            {
+              "detail": "Function `public.survey_availability(p_slug text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/survey_availability`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "survey_availability",
+                "schema": "public",
+                "language": "sql",
+                "arguments": "p_slug text",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-02T20:00:03.525Z"
+            }
+          ]
+        },
+        {
+          "name": "authenticated_security_definer_function_executable",
+          "title": "Signed-In Users Can Execute SECURITY DEFINER Function",
+          "level": "WARN",
+          "facing": "EXTERNAL",
+          "categories": [
+            "SECURITY"
+          ],
+          "description": "Detects `SECURITY DEFINER` functions that are callable by signed-in users. Revoke `EXECUTE`, switch the function to `SECURITY INVOKER`, or move it out of your exposed API schema if signed-in users should not call it.",
+          "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable",
+          "count": 6,
+          "findings": [
+            {
+              "detail": "Function `public.activate_survey(p_survey_id uuid)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/activate_survey`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "activate_survey",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "p_survey_id uuid",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-02T20:00:03.525Z"
+            },
+            {
+              "detail": "Function `public.archive_survey(p_survey_id uuid)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/archive_survey`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "archive_survey",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "p_survey_id uuid",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-02T20:00:03.525Z"
+            },
+            {
+              "detail": "Function `public.close_survey(p_survey_id uuid)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/close_survey`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "close_survey",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "p_survey_id uuid",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-02T20:00:03.525Z"
+            },
+            {
+              "detail": "Function `public.rls_auto_enable()` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/rls_auto_enable`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "rls_auto_enable",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-02T20:00:03.525Z"
+            },
+            {
+              "detail": "Function `public.submit_survey_response(p_survey_id uuid, p_anonymous_token text, p_answers jsonb)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/submit_survey_response`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "submit_survey_response",
+                "schema": "public",
+                "language": "plpgsql",
+                "arguments": "p_survey_id uuid, p_anonymous_token text, p_answers jsonb",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-02T20:00:03.525Z"
+            },
+            {
+              "detail": "Function `public.survey_availability(p_slug text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/survey_availability`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+              "metadata": {
+                "name": "survey_availability",
+                "schema": "public",
+                "language": "sql",
+                "arguments": "p_slug text",
+                "security_definer": true
+              },
+              "observed_at": "2026-11-02T20:00:03.525Z"
+            }
+          ]
+        },
+        {
+          "name": "auth_leaked_password_protection",
+          "title": "Leaked Password Protection Disabled",
+          "level": "WARN",
+          "facing": "EXTERNAL",
+          "categories": [
+            "SECURITY"
+          ],
+          "description": "Leaked password protection is currently disabled.",
+          "remediation": "https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection",
+          "count": 1,
+          "findings": [
+            {
+              "detail": "Supabase Auth prevents the use of compromised passwords by checking against HaveIBeenPwned.org. Enable this feature to enhance security.",
+              "metadata": {
+                "type": "auth",
+                "entity": "Auth"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "performance_advisors": {
+    "result": {
+      "lints": [
+        {
+          "name": "unused_index",
+          "title": "Unused Index",
+          "level": "INFO",
+          "facing": "EXTERNAL",
+          "categories": [
+            "PERFORMANCE"
+          ],
+          "description": "Detects if an index has never been used and may be a candidate for removal.",
+          "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index",
+          "count": 8,
+          "findings": [
+            {
+              "detail": "Index \\`surveys_status_idx\\` on table \\`public.surveys\\` has not been used",
+              "metadata": {
+                "name": "surveys",
+                "type": "table",
+                "schema": "public"
+              },
+              "observed_at": "2026-11-02T20:00:03.567Z"
+            },
+            {
+              "detail": "Index \\`questions_survey_id_idx\\` on table \\`public.questions\\` has not been used",
+              "metadata": {
+                "name": "questions",
+                "type": "table",
+                "schema": "public"
+              },
+              "observed_at": "2026-11-02T20:00:03.567Z"
+            },
+            {
+              "detail": "Index \\`choices_question_id_idx\\` on table \\`public.choices\\` has not been used",
+              "metadata": {
+                "name": "choices",
+                "type": "table",
+                "schema": "public"
+              },
+              "observed_at": "2026-11-02T20:00:03.567Z"
+            },
+            {
+              "detail": "Index \\`responses_survey_id_idx\\` on table \\`public.responses\\` has not been used",
+              "metadata": {
+                "name": "responses",
+                "type": "table",
+                "schema": "public"
+              },
+              "observed_at": "2026-11-02T20:00:03.567Z"
+            },
+            {
+              "detail": "Index \\`responses_submitted_at_idx\\` on table \\`public.responses\\` has not been used",
+              "metadata": {
+                "name": "responses",
+                "type": "table",
+                "schema": "public"
+              },
+              "observed_at": "2026-11-02T20:00:03.567Z"
+            },
+            {
+              "detail": "Index \\`answers_response_id_idx\\` on table \\`public.answers\\` has not been used",
+              "metadata": {
+                "name": "answers",
+                "type": "table",
+                "schema": "public"
+              },
+              "observed_at": "2026-11-02T20:00:03.567Z"
+            },
+            {
+              "detail": "Index \\`answers_question_id_idx\\` on table \\`public.answers\\` has not been used",
+              "metadata": {
+                "name": "answers",
+                "type": "table",
+                "schema": "public"
+              },
+              "observed_at": "2026-11-02T20:00:03.567Z"
+            },
+            {
+              "detail": "Index \\`answers_choice_id_idx\\` on table \\`public.answers\\` has not been used",
+              "metadata": {
+                "name": "answers",
+                "type": "table",
+                "schema": "public"
+              },
+              "observed_at": "2026-11-02T20:00:03.567Z"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "All five application tables empty; no fixtures inserted.",
+    "SQL role checks passed for anon denied results SELECT and authenticated RPC denial without identity.",
+    "Real publishable-key/PostgREST/JWT workflow, active survey reads, successful submissions, and instructor login pending.",
+    "No Auth settings changed or extra migration applied."
+  ]
+}

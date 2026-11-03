@@ -33,3 +33,12 @@ Supabase, Recharts, and qrcode are installed for later phases.
 See the supplied specifications, `TODO.md`, and `development-notes.md` for requirements,
 open decisions, verified progress, and remaining work. Production/database setup and
 deployment instructions will be added when those phases are implemented.
+
+
+## Prepared database migrations and tests
+
+Phase 2 migrations have been applied to the verified Supabase project. Hosted
+schema/permissions checks and 47 real Auth/PostgREST synthetic-data checks passed. See [supabase/README.md](supabase/README.md) for accepted decisions, the
+draft-only editing change, security boundaries, local test prerequisites, and
+future hosted setup steps. Run `npm run test:db` to create and remove a disposable
+local PostgreSQL container; no Supabase credentials or hosted project are used.
